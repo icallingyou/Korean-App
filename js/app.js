@@ -24,6 +24,31 @@ const WORDS = RAW.map((r, i) => ({
 }));
 const CATS = ['전체', ...new Set(WORDS.map(w => w.cat))];
 
+// 데이터의 한국어 분류를 화면에는 영어로 표시 (데이터 키는 그대로 유지)
+const CAT_EN = {
+  '전체': 'All',
+  '감정·성격': 'Emotions & Personality',
+  '인간관계': 'Relationships',
+  '일상생활': 'Daily Life',
+  '직장·업무': 'Work & Office',
+  '학업·교육': 'Study & Education',
+  '건강·생활': 'Health',
+  '여행·교통': 'Travel & Transit',
+  '사회·문화': 'Society & Culture',
+  '경제·소비': 'Money & Shopping',
+  '자연·환경': 'Nature & Environment',
+  '부사·표현': 'Adverbs & Expressions',
+  '동사·형용사': 'Verbs & Adjectives',
+  '추가 단어': 'Added Words',
+  '기타': 'Other'
+};
+const POS_EN = {
+  '명사': 'Noun', '동사': 'Verb', '형용사': 'Adjective', '부사': 'Adverb',
+  '명사·관형사': 'Noun · Determiner', '관형사': 'Determiner', '대명사': 'Pronoun', '감탄사': 'Interjection'
+};
+const catLabel = c => CAT_EN[c] || c;
+const posLabel = p => POS_EN[p] || p;
+
 // ---------------------------------------------------------------
 // 저장소
 // ---------------------------------------------------------------
@@ -223,14 +248,14 @@ function renderStudy() {
   const el = views.study;
 
   const chips = CATS.map(c =>
-    `<button class="chip ${ui.cat === c ? 'is-active' : ''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('') +
-    `<button class="chip is-toggle ${ui.onlyFav ? 'is-active' : ''}" data-toggle="fav">⭐ 즐겨찾기</button>` +
-    `<button class="chip is-toggle ${ui.hideLearned ? 'is-active' : ''}" data-toggle="unlearned">🎯 안 외운 단어만</button>`;
+    `<button class="chip ${ui.cat === c ? 'is-active' : ''}" data-cat="${esc(c)}">${esc(catLabel(c))}</button>`).join('') +
+    `<button class="chip is-toggle ${ui.onlyFav ? 'is-active' : ''}" data-toggle="fav">⭐ Favorites</button>` +
+    `<button class="chip is-toggle ${ui.hideLearned ? 'is-active' : ''}" data-toggle="unlearned">🎯 Not memorized</button>`;
 
   if (!total) {
     el.innerHTML = `
       <div class="filter-row">${chips}</div>
-      <div class="empty"><b>조건에 맞는 단어가 없어요.</b><br>필터를 바꾸거나 즐겨찾기·암기 표시를 확인해 보세요.</div>`;
+      <div class="empty"><b>No words match the current filters.</b><br>Try a different category or turn off the favorites/memorized filters.</div>`;
     bindFilterRow(el);
     return;
   }
@@ -244,23 +269,23 @@ function renderStudy() {
     <div class="progress-row">
       <span><b>${ui.pos + 1}</b> / ${total}</span>
       <div class="pbar"><i style="width:${pct}%"></i></div>
-      <span>외운 단어 <b>${learnedCnt}</b></span>
+      <span>Learned <b>${learnedCnt}</b></span>
     </div>
 
     <article class="card" id="study-card" aria-live="polite">
       <div class="card-top">
-        <span class="badge level">중급</span>
-        <span class="badge">${esc(w.cat)}</span>
-        <span class="badge">${esc(w.pos)}</span>
+        <span class="badge level">Intermediate</span>
+        <span class="badge">${esc(catLabel(w.cat))}</span>
+        <span class="badge">${esc(posLabel(w.pos))}</span>
         <span class="spacer"></span>
-        <button class="icon-btn good ${learned.has(w.id) ? 'is-on' : ''}" id="btn-learned" title="외웠어요 표시 (L)">${ICONS.check}</button>
-        <button class="icon-btn ${fav.has(w.id) ? 'is-on' : ''}" id="btn-fav" title="즐겨찾기 (F)">${fav.has(w.id) ? ICONS.starFill : ICONS.star}</button>
+        <button class="icon-btn good ${learned.has(w.id) ? 'is-on' : ''}" id="btn-learned" title="Mark as learned (L)">${ICONS.check}</button>
+        <button class="icon-btn ${fav.has(w.id) ? 'is-on' : ''}" id="btn-fav" title="Favorite (F)">${fav.has(w.id) ? ICONS.starFill : ICONS.star}</button>
       </div>
 
       <div class="word-line">
-        <h2 class="word" id="el-word">${esc(w.w)}</h2>
-        ${w.p ? `<span class="pron">[${esc(w.p)}]</span>` : ''}
-        <button class="speak-btn" id="btn-speak-word" title="단어 낭독 (P)">${ICONS.speaker}</button>
+        <h2 class="word" id="el-word" lang="ko">${esc(w.w)}</h2>
+        ${w.p ? `<span class="pron" lang="ko">[${esc(w.p)}]</span>` : ''}
+        <button class="speak-btn" id="btn-speak-word" title="Speak word (P)">${ICONS.speaker}</button>
       </div>
 
       ${ui.revealed ? `
@@ -268,30 +293,30 @@ function renderStudy() {
         <span class="meaning" id="el-meaning">${esc(w.en)}</span>
         <div class="defs">
           <span class="def-en" id="el-def">${esc(w.def)}</span>
-          ${settings.showKo && w.ko ? `<div class="def-ko">${esc(w.ko)}</div>` : ''}
+          ${settings.showKo && w.ko ? `<div class="def-ko" lang="ko">${esc(w.ko)}</div>` : ''}
         </div>
         <div class="examples">
           ${w.ex.map((e, i) => `
             <div class="ex">
-              <button class="speak-btn small ex-speak" data-ex="${i}" title="예문 낭독">${ICONS.speaker}</button>
+              <button class="speak-btn small ex-speak" data-ex="${i}" title="Speak sentence">${ICONS.speaker}</button>
               <div class="ex-body">
-                <span class="ex-ko" id="el-ex-ko-${i}">${esc(e.ko)}</span>
+                <span class="ex-ko" id="el-ex-ko-${i}" lang="ko">${esc(e.ko)}</span>
                 <span class="ex-en" id="el-ex-en-${i}">${esc(e.en)}</span>
               </div>
             </div>`).join('')}
         </div>
       </div>` : `
-      <div class="reveal-hint">카드를 누르면 <b>영어 뜻·해설·예문</b>이 보여요 <kbd>Space</kbd></div>`}
+      <div class="reveal-hint">Tap the card to see the <b>meaning, notes &amp; examples</b> <kbd>Space</kbd></div>`}
     </article>
 
     <div class="controls">
-      <button class="ctrl-btn" id="btn-prev" ${ui.pos === 0 ? 'disabled' : ''}>${ICONS.prev} 이전</button>
-      <button class="ctrl-btn" id="btn-reveal">${ICONS.eye} ${ui.revealed ? '뜻 가리기' : '뜻 보기'}</button>
-      <button class="ctrl-btn primary ${ui.playing ? 'playing' : ''}" id="btn-autoplay">${ui.playing ? ICONS.stopIc + ' 정지' : ICONS.play + ' 자동 읽기'}</button>
-      <button class="ctrl-btn" id="btn-shuffle">${ICONS.shuffle} 섞기</button>
-      <button class="ctrl-btn" id="btn-next" ${ui.pos >= total - 1 ? 'disabled' : ''}>다음 ${ICONS.next}</button>
+      <button class="ctrl-btn" id="btn-prev" ${ui.pos === 0 ? 'disabled' : ''}>${ICONS.prev} Prev</button>
+      <button class="ctrl-btn" id="btn-reveal">${ICONS.eye} ${ui.revealed ? 'Hide' : 'Reveal'}</button>
+      <button class="ctrl-btn primary ${ui.playing ? 'playing' : ''}" id="btn-autoplay">${ui.playing ? ICONS.stopIc + ' Stop' : ICONS.play + ' Auto play'}</button>
+      <button class="ctrl-btn" id="btn-shuffle">${ICONS.shuffle} Shuffle</button>
+      <button class="ctrl-btn" id="btn-next" ${ui.pos >= total - 1 ? 'disabled' : ''}>Next ${ICONS.next}</button>
     </div>
-    <p class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> 이동 · <kbd>Space</kbd> 뜻 보기 · <kbd>P</kbd> 단어 낭독 · <kbd>A</kbd> 자동 읽기 · <kbd>F</kbd> 즐겨찾기 · <kbd>L</kbd> 외웠어요</p>
+    <p class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> navigate · <kbd>Space</kbd> reveal · <kbd>P</kbd> speak word · <kbd>A</kbd> auto play · <kbd>F</kbd> favorite · <kbd>L</kbd> learned</p>
   `;
 
   bindFilterRow(el);
@@ -415,7 +440,7 @@ function syncPlayBtn() {
   const b = $('#btn-autoplay');
   if (!b) return;
   b.classList.toggle('playing', ui.playing);
-  b.innerHTML = ui.playing ? ICONS.stopIc + ' 정지' : ICONS.play + ' 자동 읽기';
+  b.innerHTML = ui.playing ? ICONS.stopIc + ' Stop' : ICONS.play + ' Auto play';
 }
 
 // ---------------------------------------------------------------
@@ -433,29 +458,29 @@ function renderList() {
     <div class="list-tools">
       <label class="search-box">
         ${ICONS.search}
-        <input id="list-search" type="search" placeholder="단어·뜻 검색 (한국어/영어)" value="${esc(ui.q)}" autocomplete="off">
+        <input id="list-search" type="search" placeholder="Search words (Korean/English)" value="${esc(ui.q)}" autocomplete="off">
       </label>
       <select class="cat-select" id="list-cat">
-        ${CATS.map(c => `<option value="${esc(c)}" ${ui.listCat === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}
+        ${CATS.map(c => `<option value="${esc(c)}" ${ui.listCat === c ? 'selected' : ''}>${esc(catLabel(c))}</option>`).join('')}
       </select>
     </div>
-    <p class="count-note">${rows.length}개 단어 · ⭐ 즐겨찾기 ${fav.size} · ✅ 외운 단어 ${learned.size}</p>
+    <p class="count-note">${rows.length} words · ⭐ Favorites ${fav.size} · ✅ Learned ${learned.size}</p>
     <div class="word-list">
       ${rows.map(w => `
         <div class="row" data-id="${w.id}" role="button" tabindex="0">
-          <button class="speak-btn small row-speak" data-id="${w.id}" title="낭독">${ICONS.speaker}</button>
+          <button class="speak-btn small row-speak" data-id="${w.id}" title="Speak">${ICONS.speaker}</button>
           <div class="row-main">
-            <div class="row-word">${esc(w.w)}
-              ${w.p ? `<span class="pron">[${esc(w.p)}]</span>` : ''}
-              <span class="pos-tag">${esc(w.pos)}</span>
+            <div class="row-word"><span lang="ko">${esc(w.w)}</span>
+              ${w.p ? `<span class="pron" lang="ko">[${esc(w.p)}]</span>` : ''}
+              <span class="pos-tag">${esc(posLabel(w.pos))}</span>
             </div>
-            <div class="row-en">${esc(w.en)} — ${esc(w.ko || w.def)}</div>
+            <div class="row-en">${esc(w.en)}${w.def ? ` — ${esc(w.def)}` : ''}</div>
           </div>
           <div class="row-flags">
             ${fav.has(w.id) ? `<span class="flag fav">${ICONS.starFill}</span>` : ''}
             ${learned.has(w.id) ? `<span class="flag done">${ICONS.check}</span>` : ''}
           </div>
-        </div>`).join('') || '<div class="empty">검색 결과가 없어요.</div>'}
+        </div>`).join('') || '<div class="empty">No results.</div>'}
     </div>
   `;
 
@@ -502,14 +527,14 @@ function renderQuiz() {
     const p = pool();
     el.innerHTML = `
       <div class="quiz-setup">
-        <h2>퀴즈</h2>
-        <p class="sub">현재 학습 필터(<b>${esc(ui.cat)}</b>${ui.onlyFav ? ' · ⭐' : ''}${ui.hideLearned ? ' · 안 외운 단어' : ''}) 기준 <b>${p.length}</b>개 단어에서 ${Math.min(QUIZ_N, p.length)}문제가 출제돼요.</p>
+        <h2>Quiz</h2>
+        <p class="sub">${Math.min(QUIZ_N, p.length)} questions from <b>${p.length}</b> words in your current study filter (<b>${esc(catLabel(ui.cat))}</b>${ui.onlyFav ? ' · ⭐ favorites' : ''}${ui.hideLearned ? ' · not memorized' : ''}).</p>
         <div class="quiz-types">
-          <button class="quiz-type" data-type="k2e"><b>${ICONS.ab} 한국어 → 영어</b><span>한국어 단어를 보고 영어 뜻 고르기</span></button>
-          <button class="quiz-type" data-type="e2k"><b>${ICONS.ab} 영어 → 한국어</b><span>영어 뜻을 보고 한국어 단어 고르기</span></button>
-          <button class="quiz-type" data-type="listen"><b>${ICONS.ear} 듣기</b><span>발음을 듣고 영어 뜻 고르기</span></button>
+          <button class="quiz-type" data-type="k2e"><b>${ICONS.ab} Korean → English</b><span>See the Korean word, pick the English meaning</span></button>
+          <button class="quiz-type" data-type="e2k"><b>${ICONS.ab} English → Korean</b><span>See the English meaning, pick the Korean word</span></button>
+          <button class="quiz-type" data-type="listen"><b>${ICONS.ear} Listening</b><span>Hear the word, pick the English meaning</span></button>
         </div>
-        ${p.length < 4 ? '<p class="quiz-note">⚠️ 퀴즈를 만들려면 필터에 단어가 4개 이상 필요해요.</p>' : ''}
+        ${p.length < 4 ? '<p class="quiz-note">⚠️ You need at least 4 words in the filter to start a quiz.</p>' : ''}
       </div>`;
     el.querySelectorAll('.quiz-type').forEach(b =>
       b.addEventListener('click', () => startQuiz(b.dataset.type)));
@@ -520,14 +545,14 @@ function renderQuiz() {
     const wrong = qz.qs.filter(q => q.picked !== null && q.picked !== q.answer);
     el.innerHTML = `
       <div class="quiz-end">
-        <h2>퀴즈 완료 🎉</h2>
+        <h2>Quiz complete 🎉</h2>
         <div class="score">${qz.score} / ${qz.qs.length}</div>
-        <p class="sub">${qz.score === qz.qs.length ? '완벽해요! 대단합니다 👏' : qz.score >= qz.qs.length * 0.7 ? '잘했어요! 틀린 단어만 다시 확인해 보세요.' : '틀린 단어를 학습 카드에서 복습해 보세요.'}</p>
+        <p class="sub">${qz.score === qz.qs.length ? 'Perfect score! Amazing 👏' : qz.score >= qz.qs.length * 0.7 ? 'Great job! Just review the ones you missed.' : 'Review the missed words in Study mode.'}</p>
         ${wrong.length ? `<ul class="wrong-list">${wrong.map(q =>
-          `<li><b>${esc(q.w.w)}</b> ${esc(q.w.en)} <span style="color:var(--muted)">— ${esc(q.w.ko || '')}</span></li>`).join('')}</ul>` : ''}
+          `<li><b lang="ko">${esc(q.w.w)}</b> ${esc(q.w.en)} <span style="color:var(--muted)" lang="ko">— ${esc(q.w.ko || '')}</span></li>`).join('')}</ul>` : ''}
         <div class="actions">
-          <button class="ctrl-btn primary" id="quiz-retry">${ICONS.play} 다시 풀기</button>
-          <button class="ctrl-btn" id="quiz-new">유형 바꾸기</button>
+          <button class="ctrl-btn primary" id="quiz-retry">${ICONS.play} Try again</button>
+          <button class="ctrl-btn" id="quiz-new">Change mode</button>
         </div>
       </div>`;
     $('#quiz-retry').addEventListener('click', () => startQuiz(qz.type));
@@ -538,16 +563,16 @@ function renderQuiz() {
   const q = qz.qs[qz.i];
   const answered = q.picked !== null;
   const promptHtml =
-    qz.type === 'k2e' ? `<h2 class="word">${esc(q.w.w)}</h2>${q.w.p ? `<div class="pron">[${esc(q.w.p)}]</div>` : ''}` :
+    qz.type === 'k2e' ? `<h2 class="word" lang="ko">${esc(q.w.w)}</h2>${q.w.p ? `<div class="pron" lang="ko">[${esc(q.w.p)}]</div>` : ''}` :
     qz.type === 'e2k' ? `<div class="prompt-en">${esc(q.w.en)}</div><div class="listen-hint">${esc(q.w.def)}</div>` :
-    `<button class="speak-btn" id="quiz-listen" title="다시 듣기">${ICONS.speaker}</button>
-     <div class="listen-hint">${answered ? `<b>${esc(q.w.w)}</b>${q.w.p ? ` [${esc(q.w.p)}]` : ''}` : '🔊 버튼을 눌러 단어를 듣고 뜻을 고르세요.'}</div>`;
+    `<button class="speak-btn" id="quiz-listen" title="Play again">${ICONS.speaker}</button>
+     <div class="listen-hint">${answered ? `<b lang="ko">${esc(q.w.w)}</b>${q.w.p ? ` <span lang="ko">[${esc(q.w.p)}]</span>` : ''}` : 'Tap 🔊 to hear the word, then pick its meaning.'}</div>`;
 
   el.innerHTML = `
     <div class="quiz-run">
       <div class="quiz-head">
         <span>${qz.i + 1} / ${qz.qs.length}</span>
-        <span>점수 ${qz.score}</span>
+        <span>Score ${qz.score}</span>
       </div>
       <div class="quiz-q">${promptHtml}</div>
       <div class="quiz-opts">
@@ -558,13 +583,13 @@ function renderQuiz() {
             if (i === q.answer) cls = 'correct';
             else if (i === q.picked) cls = 'wrong';
           }
-          return `<button class="quiz-opt ${cls}" data-i="${i}" ${answered ? 'disabled' : ''}>${esc(label)}</button>`;
+          return `<button class="quiz-opt ${cls}" data-i="${i}" ${answered ? 'disabled' : ''} ${qz.type === 'e2k' ? 'lang="ko"' : ''}>${esc(label)}</button>`;
         }).join('')}
       </div>
       ${answered ? `
       <div class="quiz-after">
-        <span class="info">${q.picked === q.answer ? '⭕ 정답!' : '❌ 오답'} — <b>${esc(q.w.w)}</b> : ${esc(q.w.en)}</span>
-        <button class="ctrl-btn primary" id="quiz-next">${qz.i === qz.qs.length - 1 ? '결과 보기' : '다음 문제'} ${ICONS.next}</button>
+        <span class="info">${q.picked === q.answer ? '⭕ Correct!' : '❌ Wrong'} — <b lang="ko">${esc(q.w.w)}</b> : ${esc(q.w.en)}</span>
+        <button class="ctrl-btn primary" id="quiz-next">${qz.i === qz.qs.length - 1 ? 'See results' : 'Next question'} ${ICONS.next}</button>
       </div>` : ''}
     </div>`;
 
@@ -620,61 +645,61 @@ function renderSettings() {
   el.innerHTML = `
     <div class="settings-grid">
       <div class="setting-card">
-        <h3>낭독 (TTS)</h3>
-        <p class="hint">브라우저에 설치된 음성을 사용해요. 한국어 음성은 Chrome·Edge·Safari에서 가장 자연스럽습니다.</p>
+        <h3>Audio (TTS)</h3>
+        <p class="hint">Uses the voices installed in your browser. Korean voices sound best in Chrome, Edge, and Safari.</p>
         <div class="setting-row">
-          <label class="grow" for="set-rate">한국어 낭독 속도</label>
+          <label class="grow" for="set-rate">Korean speech rate</label>
           <input type="range" id="set-rate" min="0.6" max="1.4" step="0.05" value="${settings.rate}">
           <span class="rate-val">${settings.rate.toFixed(2)}×</span>
         </div>
         <div class="setting-row">
-          <label class="grow" for="set-ko-voice">한국어 음성</label>
+          <label class="grow" for="set-ko-voice">Korean voice</label>
           <select id="set-ko-voice" ${koVoices.length ? '' : 'disabled'}>
             ${koVoices.length
               ? koVoices.map(v => `<option value="${esc(v.name)}" ${koSel && v.name === koSel.name ? 'selected' : ''}>${esc(v.name)}</option>`).join('')
-              : '<option>한국어 음성이 없어요</option>'}
+              : '<option>No Korean voice found</option>'}
           </select>
         </div>
         <div class="setting-row">
-          <label class="grow" for="set-en-voice">영어 음성</label>
+          <label class="grow" for="set-en-voice">English voice</label>
           <select id="set-en-voice" ${enVoices.length ? '' : 'disabled'}>
             ${enVoices.length
               ? enVoices.map(v => `<option value="${esc(v.name)}" ${enSel && v.name === enSel.name ? 'selected' : ''}>${esc(v.name)}</option>`).join('')
-              : '<option>영어 음성이 없어요</option>'}
+              : '<option>No English voice found</option>'}
           </select>
         </div>
         <div class="setting-row">
-          <span class="grow">미리 듣기</span>
-          <button class="ctrl-btn" id="btn-preview">${ICONS.speaker} 안녕하세요 / Hello</button>
+          <span class="grow">Preview</span>
+          <button class="ctrl-btn" id="btn-preview">${ICONS.speaker} <span lang="ko">안녕하세요</span> / Hello</button>
         </div>
       </div>
 
       <div class="setting-card">
-        <h3>학습 방식</h3>
+        <h3>Learning options</h3>
         <div class="setting-row">
-          <label class="grow" for="set-autoread">카드를 넘길 때 단어 자동 낭독</label>
+          <label class="grow" for="set-autoread">Auto-speak the word when changing cards</label>
           <span class="switch"><input type="checkbox" id="set-autoread" ${settings.autoRead ? 'checked' : ''}><i></i></span>
         </div>
         <div class="setting-row">
-          <label class="grow" for="set-readen">자동 읽기에 영어 해설 포함</label>
+          <label class="grow" for="set-readen">Include English explanations in auto play</label>
           <span class="switch"><input type="checkbox" id="set-readen" ${settings.readEn ? 'checked' : ''}><i></i></span>
         </div>
         <div class="setting-row">
-          <label class="grow" for="set-cont">연속 재생 (자동으로 다음 카드로)</label>
+          <label class="grow" for="set-cont">Continuous play (advance to the next card)</label>
           <span class="switch"><input type="checkbox" id="set-cont" ${settings.cont ? 'checked' : ''}><i></i></span>
         </div>
         <div class="setting-row">
-          <label class="grow" for="set-showko">한국어 뜻풀이 함께 표시</label>
+          <label class="grow" for="set-showko">Show the Korean definition</label>
           <span class="switch"><input type="checkbox" id="set-showko" ${settings.showKo ? 'checked' : ''}><i></i></span>
         </div>
       </div>
 
       <div class="setting-card">
-        <h3>학습 현황</h3>
+        <h3>Progress</h3>
         <div class="stat-chips">
-          <span class="stat-chip">전체 단어 <b>${WORDS.length}</b></span>
-          <span class="stat-chip">외운 단어 <b>${learned.size}</b></span>
-          <span class="stat-chip">즐겨찾기 <b>${fav.size}</b></span>
+          <span class="stat-chip">Total words <b>${WORDS.length}</b></span>
+          <span class="stat-chip">Learned <b>${learned.size}</b></span>
+          <span class="stat-chip">Favorites <b>${fav.size}</b></span>
         </div>
         <div class="cat-progress">
           ${CATS.slice(1).map(c => {
@@ -683,24 +708,25 @@ function renderSettings() {
             const pct = ws.length ? Math.round(n / ws.length * 100) : 0;
             return `
             <div class="cat-progress-row">
-              <span class="cat-name">${esc(c)}</span>
+              <span class="cat-name">${esc(catLabel(c))}</span>
               <div class="pbar"><i style="width:${pct}%"></i></div>
               <span class="cat-count">${n}/${ws.length}</span>
             </div>`;
           }).join('')}
         </div>
         <div class="setting-row" style="margin-top:10px">
-          <span class="grow">진도 초기화 (외운 단어·즐겨찾기 삭제)</span>
-          <button class="danger-btn" id="btn-reset">초기화</button>
+          <span class="grow">Reset progress (clears learned words &amp; favorites)</span>
+          <button class="danger-btn" id="btn-reset">Reset</button>
         </div>
       </div>
 
       <div class="setting-card">
-        <h3>데이터 출처</h3>
+        <h3>Data source</h3>
         <p class="hint" style="margin-bottom:0">
-          어휘 등급 기준: 국립국어원 <a href="https://krdict.korean.go.kr" target="_blank" rel="noopener">한국어기초사전</a>의 등급별 어휘(중급) 분류 ·
-          뜻풀이와 예문은 본 앱에서 학습용으로 작성했습니다.
-          <code>scripts/fetch-krdict.mjs</code>로 오픈 API에서 단어를 추가할 수 있어요(README 참고).
+          Word grading follows the intermediate (중급) list of the National Institute of Korean Language's
+          <a href="https://krdict.korean.go.kr" target="_blank" rel="noopener">Korean Basic Dictionary</a>.
+          Definitions and examples were written for this app.
+          You can add more words from the open API with <code>scripts/fetch-krdict.mjs</code> (see README).
         </p>
       </div>
     </div>`;
@@ -724,7 +750,7 @@ function renderSettings() {
   $('#set-cont').addEventListener('change', e => { settings.cont = e.target.checked; persist(); });
   $('#set-showko').addEventListener('change', e => { settings.showKo = e.target.checked; persist(); });
   $('#btn-reset').addEventListener('click', () => {
-    if (!confirm('외운 단어와 즐겨찾기 기록을 모두 지울까요?')) return;
+    if (!confirm('Clear all learned words and favorites?')) return;
     fav.clear(); learned.clear(); persist();
     renderSettings();
   });

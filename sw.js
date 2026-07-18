@@ -1,5 +1,5 @@
 /* 오프라인 지원 서비스 워커 — 네트워크 우선, 실패 시 캐시 사용 */
-const CACHE = 'kvoca-v2';
+const CACHE = 'kvoca-v3';
 const ASSETS = [
   './',
   './index.html',

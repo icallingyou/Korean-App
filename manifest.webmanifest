@@ -1,8 +1,8 @@
 {
-  "name": "중급 한국어 단어장",
-  "short_name": "중급 단어장",
-  "description": "국립국어원 등급 기준 중급 어휘를 예문과 함께 한국어로 읽어 주고 영어로 설명해 주는 학습 앱",
-  "lang": "ko",
+  "name": "Intermediate Korean Vocabulary",
+  "short_name": "Korean Vocab",
+  "description": "Learn intermediate Korean words (NIKL-graded) with example sentences, Korean audio, and English explanations.",
+  "lang": "en",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f7f4ee",

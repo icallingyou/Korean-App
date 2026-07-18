@@ -301,7 +301,7 @@ main {
 .defs { margin: 10px 0 0; }
 .def-en { font-size: 15.5px; color: var(--ink-soft); display: inline-block; }
 .def-ko { margin-top: 4px; font-size: 14px; color: var(--muted); }
-.def-ko::before { content: "뜻풀이 · "; font-weight: 700; }
+.def-ko::before { content: "Korean definition · "; font-weight: 700; }
 
 .examples {
   margin-top: 16px;
