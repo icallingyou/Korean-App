@@ -1,5 +1,5 @@
 /* 오프라인 지원 서비스 워커 — 네트워크 우선, 실패 시 캐시 사용 */
-const CACHE = 'kvoca-v1';
+const CACHE = 'kvoca-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,10 @@ const ASSETS = [
   './data/words2.js',
   './data/words.extra.js',
   './assets/icon.svg',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
+  './assets/icon-maskable-512.png',
+  './assets/apple-touch-icon.png',
   './manifest.webmanifest'
 ];
 
