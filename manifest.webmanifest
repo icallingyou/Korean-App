@@ -1,0 +1,13 @@
+{
+  "name": "중급 한국어 단어장",
+  "short_name": "중급 단어장",
+  "description": "국립국어원 등급 기준 중급 어휘를 예문과 함께 한국어로 읽어 주고 영어로 설명해 주는 학습 앱",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7f4ee",
+  "theme_color": "#2f4ad0",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
