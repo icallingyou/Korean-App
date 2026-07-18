@@ -540,6 +540,17 @@ select.cat-select {
 .switch input:checked + i { background: var(--primary); border-color: var(--primary); }
 .switch input:checked + i::after { transform: translateX(20px); }
 
+.cat-progress { margin-top: 14px; display: grid; gap: 7px; }
+.cat-progress-row {
+  display: grid;
+  grid-template-columns: 92px 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.cat-progress-row .cat-name { color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cat-progress-row .cat-count { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+
 .danger-btn {
   border: 1px solid var(--accent);
   color: var(--accent);

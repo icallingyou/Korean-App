@@ -676,6 +676,19 @@ function renderSettings() {
           <span class="stat-chip">외운 단어 <b>${learned.size}</b></span>
           <span class="stat-chip">즐겨찾기 <b>${fav.size}</b></span>
         </div>
+        <div class="cat-progress">
+          ${CATS.slice(1).map(c => {
+            const ws = WORDS.filter(w => w.cat === c);
+            const n = ws.filter(w => learned.has(w.id)).length;
+            const pct = ws.length ? Math.round(n / ws.length * 100) : 0;
+            return `
+            <div class="cat-progress-row">
+              <span class="cat-name">${esc(c)}</span>
+              <div class="pbar"><i style="width:${pct}%"></i></div>
+              <span class="cat-count">${n}/${ws.length}</span>
+            </div>`;
+          }).join('')}
+        </div>
         <div class="setting-row" style="margin-top:10px">
           <span class="grow">진도 초기화 (외운 단어·즐겨찾기 삭제)</span>
           <button class="danger-btn" id="btn-reset">초기화</button>
@@ -736,6 +749,14 @@ document.addEventListener('keydown', e => {
     case 'l': case 'L': if (w) { toggleLearned(w.id); renderStudy(); } break;
   }
 });
+
+// ---------------------------------------------------------------
+// 오프라인 지원 (서비스 워커는 https 또는 localhost에서만 동작)
+// ---------------------------------------------------------------
+if ('serviceWorker' in navigator &&
+    (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
+  navigator.serviceWorker.register('./sw.js').catch(() => { /* 미지원/실패 시 온라인 전용으로 동작 */ });
+}
 
 // ---------------------------------------------------------------
 // 시작
