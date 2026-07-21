@@ -1,0 +1,659 @@
+<!-- korean.jiaekim.com/stories — 너와 그린 계절 (Prologue + Episode 1), free online reader -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn Korean with a Romance Novel · 너와 그린 계절 — korean.jiaekim.com/stories</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;600;700&display=swap');
+  :root{
+    --bg:#0c1320; --surface:#16202f; --surface2:#1b2738; --border:#273549;
+    --ink:#e9eff7; --ink-soft:#b6c2d2; --muted:#82909f;
+    --amber:#e4ab60; --amber-soft:rgba(228,171,96,.15); --amber-line:rgba(228,171,96,.6);
+    --ice:#8ac6ec; --ice-soft:rgba(138,198,236,.14); --ice-line:rgba(138,198,236,.55);
+    --rose:#dc90a6; --good:#79c99a; --bad:#e58b8b;
+    --shadow:0 18px 50px rgba(0,0,0,.45);
+    --f-disp:'Fraunces','Noto Serif KR',serif; --f-ko:'Noto Serif KR','Fraunces',serif;
+    --f-ui:'Inter',system-ui,sans-serif; --maxw:960px;
+  }
+  html[data-theme="day"]{
+    --bg:#e6ecf2; --surface:#fff; --surface2:#f5f8fb; --border:#d5dde6;
+    --ink:#17222f; --ink-soft:#3d4b5b; --muted:#697a8b;
+    --amber:#a96a1f; --amber-soft:rgba(169,106,31,.12); --amber-line:rgba(169,106,31,.6);
+    --ice:#2c78a6; --ice-soft:rgba(44,120,166,.1); --ice-line:rgba(44,120,166,.55);
+    --rose:#b45a73; --good:#2f8f5c; --bad:#c0524f; --shadow:0 16px 40px rgba(30,55,80,.14);
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--bg); color:var(--ink); font-family:var(--f-ui); line-height:1.6; -webkit-font-smoothing:antialiased; padding:0 18px 90px}
+  .wrap{max-width:var(--maxw); margin:0 auto}
+  .hero{text-align:center; padding:52px 0 22px}
+  .eyebrow{font-size:.72rem; letter-spacing:.26em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  .title{font-family:var(--f-ko); font-weight:700; font-size:clamp(1.9rem,6vw,2.7rem); margin:.3em 0 .05em; letter-spacing:-.01em}
+  .title .rose{color:var(--rose)}
+  .chapter{font-family:var(--f-disp); font-style:italic; color:var(--ink-soft); font-size:1.1rem}
+  .badges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:18px}
+  .badge{font-size:.72rem; font-weight:600; border:1px solid var(--border); border-radius:100px; padding:5px 12px; color:var(--ink-soft); background:var(--surface)}
+  .badge b{color:var(--amber)} .badge .ic{color:var(--ice)}
+  .recap{max-width:560px; margin:20px auto 0; font-size:.86rem; color:var(--muted); font-style:italic; font-family:var(--f-disp)}
+  .controls{position:sticky; top:0; z-index:20; margin:22px 0 4px; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:blur(9px); border:1px solid var(--border); border-radius:14px; padding:9px; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .seg{display:inline-flex; border:1px solid var(--border); border-radius:9px; overflow:hidden}
+  .seg button{appearance:none; border:0; background:var(--surface2); color:var(--muted); font-family:var(--f-ui); font-weight:600; font-size:.78rem; padding:7px 12px; cursor:pointer; border-right:1px solid var(--border)}
+  .seg button:last-child{border-right:0}
+  .seg button[aria-pressed="true"]{background:var(--ice-soft); color:var(--ink)}
+  .lbl{font-size:.74rem; color:var(--muted); font-weight:600}
+  .ctl{appearance:none; cursor:pointer; font-family:var(--f-ui); font-size:.78rem; font-weight:600; color:var(--ink-soft); background:var(--surface2); border:1px solid var(--border); border-radius:9px; padding:7px 11px; margin-left:auto}
+  .hint{font-size:.76rem; color:var(--muted); text-align:center; margin:12px 2px 0}
+  .hint b{color:var(--ice)}
+  .reader{margin:20px 0 0}
+  .row{display:grid; grid-template-columns:1.05fr 0.95fr; gap:10px 30px; padding:11px 0; border-bottom:1px solid color-mix(in srgb,var(--border) 55%,transparent); align-items:start}
+  .row:last-child{border-bottom:0}
+  .ko{font-family:var(--f-ko); font-size:1.24rem; line-height:1.95; color:var(--ink); word-break:keep-all}
+  .en{font-family:var(--f-disp); font-style:italic; font-size:1rem; line-height:1.55; color:var(--ink-soft); padding-top:3px; transition:opacity .18s}
+  .row.dlg .ko{padding-left:14px; border-left:2px solid var(--rose)}
+  .row.dlg .ko b.q{color:var(--rose); font-weight:400}
+  .row.head .ko{font-family:var(--f-ui); font-weight:700; font-size:.98rem; line-height:1.5; background:var(--surface2); border-left:3px solid var(--amber); padding:11px 13px; border-radius:0 8px 8px 0; letter-spacing:-.01em}
+  body[data-en="dim"] .reader .en{opacity:.32}
+  body[data-en="dim"] .reader .row:hover .en, body[data-en="dim"] .reader .row:focus-within .en{opacity:1}
+  body[data-en="hide"] .reader .en{display:none}
+  body[data-en="hide"] .reader .row{grid-template-columns:1fr}
+  body[data-en="show"] .reader .en{opacity:1}
+  .kw{color:inherit; text-decoration:none; border-bottom:1.5px solid var(--amber-line); cursor:pointer; white-space:nowrap}
+  .kw.g{border-bottom-color:var(--ice-line)}
+  .kw sup{font-family:var(--f-ui); font-style:normal; font-size:.6em; font-weight:700; color:var(--amber); margin-left:1px; vertical-align:.5em}
+  .kw.g sup{color:var(--ice)}
+  .kw:hover{background:var(--amber-soft)} .kw.g:hover{background:var(--ice-soft)}
+  .sec{margin:46px 0 0}
+  .sec-h{display:flex; align-items:baseline; gap:12px; margin:0 0 4px}
+  .sec-h h2{font-family:var(--f-disp); font-weight:600; font-size:1.5rem; margin:0}
+  .sec-h .ko{font-family:var(--f-ko); color:var(--muted); font-size:.95rem}
+  .sec-sub{color:var(--muted); font-size:.85rem; margin:0 0 18px}
+  .note{display:grid; grid-template-columns:auto 1fr; gap:2px 14px; padding:13px 15px; border:1px solid var(--border); border-radius:12px; margin-bottom:9px; background:var(--surface); scroll-margin-top:80px}
+  .note.flash{animation:fl 1.4s ease}
+  @keyframes fl{0%,40%{background:var(--amber-soft); border-color:var(--amber-line)} 100%{}}
+  .n-num{grid-row:1/99; font-family:var(--f-ui); font-weight:800; font-size:.95rem; color:var(--amber); min-width:22px}
+  .note.g .n-num{color:var(--ice)}
+  .n-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
+  .n-word{font-family:var(--f-ko); font-weight:700; font-size:1.12rem; color:var(--ink)}
+  .n-base{font-family:var(--f-ko); font-size:.82rem; color:var(--muted)}
+  .n-pos{font-size:.6rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 7px; border-radius:6px; background:var(--amber-soft); color:var(--amber); border:1px solid var(--amber-line)}
+  .note.g .n-pos{background:var(--ice-soft); color:var(--ice); border-color:var(--ice-line)}
+  .n-en{font-size:.92rem; color:var(--ink); margin-top:5px; line-height:1.55}
+  .n-note{font-size:.83rem; color:var(--ink-soft); margin-top:6px; line-height:1.55}
+  .n-ex{margin-top:8px; background:var(--surface2); border-radius:9px; padding:9px 11px; font-size:.86rem}
+  .n-ex .k{font-family:var(--f-ko); color:var(--ink)} .n-ex .e{color:var(--muted); font-style:italic; font-family:var(--f-disp); margin-top:2px}
+  .quiz{margin:46px 0 0; border:1px solid var(--border); border-radius:18px; background:var(--surface); padding:26px 22px}
+  .quiz-top{text-align:center; margin-bottom:22px}
+  .quiz-top .k{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--amber); font-weight:700}
+  .quiz-top h2{font-family:var(--f-disp); font-size:1.6rem; margin:.3em 0 .1em}
+  .quiz-top p{color:var(--muted); font-size:.85rem; margin:0}
+  .q{border-top:1px solid var(--border); padding:20px 0}
+  .q:first-of-type{border-top:0}
+  .q-tag{font-size:.62rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ice)}
+  .q-text{font-family:var(--f-ko); font-size:1.08rem; margin:6px 0 4px; color:var(--ink); line-height:1.6}
+  .q-sub{font-size:.82rem; color:var(--muted); font-style:italic; font-family:var(--f-disp); margin-bottom:12px}
+  .opt{display:block; width:100%; text-align:left; font-family:var(--f-ui); font-size:.92rem; color:var(--ink); background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:11px 14px; margin-bottom:8px; cursor:pointer; transition:.12s}
+  .opt .ko{font-family:var(--f-ko); font-size:1rem; display:block}
+  .opt .glo{color:var(--muted); font-size:.82rem; display:block; margin-top:2px}
+  .opt:hover:not(:disabled){border-color:var(--muted)}
+  .opt:disabled{cursor:default}
+  .opt.correct{border-color:var(--good); background:color-mix(in srgb,var(--good) 16%,var(--surface2))}
+  .opt.wrong{border-color:var(--bad); background:color-mix(in srgb,var(--bad) 14%,var(--surface2)); opacity:.9}
+  .opt .mk{float:right; font-weight:800}
+  .opt.correct .mk{color:var(--good)} .opt.wrong .mk{color:var(--bad)}
+  .expl{display:none; font-size:.86rem; color:var(--ink-soft); line-height:1.55; margin-top:10px; padding:11px 13px; border-left:2px solid var(--amber-line); background:var(--amber-soft); border-radius:0 9px 9px 0}
+  .expl.show{display:block}
+  .result{display:none; text-align:center; margin-top:26px; padding:22px; border:1px dashed var(--amber-line); border-radius:14px; background:var(--amber-soft)}
+  .result.show{display:block}
+  .result .score{font-family:var(--f-disp); font-size:2.2rem; font-weight:600; color:var(--amber)}
+  .result .rank{font-family:var(--f-ko); font-size:1.2rem; font-weight:700; margin:.2em 0}
+  .result .blurb{color:var(--ink-soft); font-size:.9rem}
+  .result button{margin-top:14px; font-family:var(--f-ui); font-weight:700; font-size:.85rem; background:none; color:var(--ice); border:1px solid var(--ice-line); border-radius:9px; padding:8px 16px; cursor:pointer}
+  .cta{margin:40px 0 0; text-align:center; border:1px solid var(--amber-line); border-radius:16px; padding:28px 22px; background:radial-gradient(120% 100% at 50% 0,var(--amber-soft),transparent 70%),var(--surface)}
+  .cta .k{font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--amber); font-weight:700}
+  .cta h3{font-family:var(--f-ko); font-size:1.35rem; margin:.4em 0 .3em}
+  .cta p{color:var(--ink-soft); font-size:.9rem; max-width:400px; margin:0 auto}
+  footer{max-width:var(--maxw); margin:40px auto 0; text-align:center; color:var(--muted); font-size:.76rem; line-height:1.7}
+  footer a{color:var(--ice); text-decoration:none; font-weight:600}
+  @media (max-width:680px){
+    .row{grid-template-columns:1fr; gap:4px; padding:12px 0}
+    .en{padding-top:2px; padding-left:2px}
+    body[data-en="dim"] .reader .en{opacity:.4}
+    .ko{font-size:1.18rem}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+  /* --- /stories page additions --- */
+  body{padding:0 18px 90px}
+  .cover{min-height:88vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:60px 0 30px}
+  .cover .eyebrow{font-size:.72rem; letter-spacing:.26em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  .cover h1{font-family:var(--f-ko); font-weight:700; font-size:clamp(2.3rem,9vw,3.6rem); letter-spacing:-.02em; margin:.28em 0 .1em; line-height:1.1}
+  .cover h1 .rose{color:var(--rose)}
+  .cover .season{font-family:var(--f-disp); font-style:italic; font-size:1.25rem; color:var(--ink-soft)}
+  .cover .lede{max-width:460px; margin:18px auto 0; color:var(--ink-soft); font-size:.95rem; line-height:1.6}
+  .cover .actions{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:26px}
+  .btn-primary{font-family:var(--f-ui); font-weight:700; font-size:.95rem; background:var(--amber); color:#1a130a; border:0; border-radius:12px; padding:13px 26px; cursor:pointer; text-decoration:none; display:inline-block}
+  .btn-ghost{font-family:var(--f-ui); font-weight:700; font-size:.95rem; color:var(--ink); background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:13px 24px; cursor:pointer; text-decoration:none; display:inline-block}
+  .cover .free{margin-top:14px; font-size:.78rem; color:var(--muted)}
+  .cover .credit{margin-top:24px; font-size:.8rem; color:var(--muted); line-height:1.7}
+  .cover .credit a{color:var(--ice); text-decoration:none; font-weight:600}
+  .topnav{position:sticky; top:0; z-index:30; display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:9px; margin:0 0 6px; background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:blur(9px); border:1px solid var(--border); border-radius:14px}
+  .topnav .brand{font-family:var(--f-ko); font-weight:700; font-size:.85rem; color:var(--ink); margin-right:4px}
+  .topnav a.jump{font-size:.8rem; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:6px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface2)}
+  .topnav a.jump:hover{border-color:var(--muted)}
+  .topnav .spacer{margin-left:auto}
+  .ch-head{padding:30px 0 6px; text-align:center}
+  .ch-kicker{font-size:.68rem; letter-spacing:.22em; text-transform:uppercase; color:var(--amber); font-weight:700}
+  .ch-title{font-family:var(--f-ko); font-weight:700; font-size:1.9rem; margin:.25em 0 .1em}
+  .ch-recap{max-width:520px; margin:8px auto 0; font-size:.85rem; color:var(--muted); font-style:italic; font-family:var(--f-disp)}
+  .ch-head .badges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:14px}
+  .ch-head .badge{font-size:.72rem; font-weight:600; border:1px solid var(--border); border-radius:100px; padding:5px 12px; color:var(--ink-soft); background:var(--surface)}
+  .ch-head .badge .ic{color:var(--ice)}
+  hr.chapdiv{border:0; height:1px; background:var(--border); margin:44px 20%}
+  .sec-h h3, .quiz-top h3{font-family:var(--f-disp); font-weight:600; margin:0}
+  .sec-h h3{font-size:1.4rem} .quiz-top h3{font-size:1.5rem}
+  /* round-trip: keyword anchors + flash + back button */
+  .kw{scroll-margin-top:84px}
+  .kw.flash{background:var(--amber-soft); border-radius:5px; box-shadow:0 0 0 3px var(--amber-soft)}
+  .kw.g.flash{background:var(--ice-soft); box-shadow:0 0 0 3px var(--ice-soft)}
+  .n-back{margin-top:11px; font-family:var(--f-ui); font-weight:600; font-size:.78rem; color:var(--ice); background:none; border:1px solid var(--ice-line); border-radius:8px; padding:6px 12px; cursor:pointer}
+  .n-back:hover{background:var(--ice-soft)}
+  /* word bottom-sheet (tap a word -> definition in place) */
+  #wsheet-bg{position:fixed;inset:0;background:rgba(8,12,20,.45);opacity:0;pointer-events:none;transition:opacity .18s;z-index:60}
+  #wsheet-bg.open{opacity:1;pointer-events:auto}
+  #wsheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:min(640px,100%);max-height:70vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-bottom:0;border-radius:18px 18px 0 0;box-shadow:var(--shadow);z-index:61;transition:transform .22s ease;padding:16px 20px calc(20px + env(safe-area-inset-bottom))}
+  #wsheet.open{transform:translate(-50%,0)}
+  #wsheet .grab{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 14px}
+  .ws-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .ws-word{font-family:var(--f-ko);font-weight:700;font-size:1.35rem}
+  .ws-pos{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);border-radius:99px;padding:2px 9px}
+  .ws-base{color:var(--ink-soft);font-size:.9rem;margin-top:4px}
+  .ws-en{margin-top:10px;font-weight:600}
+  .ws-note{margin-top:8px;color:var(--ink-soft);font-size:.92rem;line-height:1.65}
+  .ws-ex{margin-top:12px;border-left:3px solid var(--amber-line);padding:7px 12px;background:var(--surface2);border-radius:8px}
+  .ws-ex .k{font-family:var(--f-ko)} .ws-ex .e{color:var(--muted);font-size:.88rem;margin-top:2px}
+  .ws-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .kw.seen sup{color:var(--good)}
+  .buy{margin:46px 0 0; text-align:center; border:1px solid var(--amber-line); border-radius:18px; padding:30px 24px; background:radial-gradient(120% 100% at 50% 0,var(--amber-soft),transparent 70%),var(--surface)}
+  .buy .k{font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--amber); font-weight:700}
+  .buy h3{font-family:var(--f-ko); font-size:1.4rem; margin:.4em 0 .3em}
+  .buy p{color:var(--ink-soft); font-size:.9rem; max-width:440px; margin:0 auto 18px}
+  @media (max-width:520px){ .topnav .brand{display:none} }
+</style>
+
+<div class="wrap">
+  <section class="cover" id="top">
+    <div class="eyebrow">Learn Korean with a Romance Novel · 로맨스로 배우는 한국어</div>
+    <h1>너와 <span class="rose">그린</span> 계절</h1>
+    <div class="season">A bilingual study edition for TOPIK 5–6</div>
+    <p class="lede">Read a Korean romance novel side-by-side with English. Key words, expressions and grammar explained in detail — with a quiz at the end of every episode.</p>
+    <div class="actions">
+      <!-- ▼▼▼  검로드 링크를 여기에 붙여넣으세요 (Paste your Gumroad product link) ▼▼▼ -->
+      <a class="btn-primary" id="get-starter" href="https://gumroad.com/l/REPLACE-ME" target="_blank" rel="noopener">무료 스타터 받기 · Get the free starter</a>
+      <!-- ▲▲▲  위 href="https://gumroad.com/l/REPLACE-ME" 부분만 실제 링크로 교체 ▲▲▲ -->
+      <a class="btn-ghost" data-jump="#ch-prologue">여기서 바로 읽기 · Read online now</a>
+    </div>
+    <div class="free">Free · no signup to read online</div>
+    <div class="credit">
+      소설 「너와 그린 계절」 — 글 <b>담녹</b> (Damnok)<br>
+      Study edition by Jiae Kim · <a href="https://korean.jiaekim.com" target="_blank" rel="noopener">korean.jiaekim.com</a>
+    </div>
+  </section>
+
+  <nav class="topnav">
+    <span class="brand">너와 그린 계절 · Study</span>
+    <a class="jump" data-jump="#ch-prologue">프롤로그</a>
+    <a class="jump" data-jump="#ch-ep1">1화</a>
+    <a class="jump" href="https://korean.jiaekim.com/" title="Vocabulary app">📚 단어장</a>
+    <span class="spacer"></span>
+    <span class="lbl">English</span>
+    <div class="seg" id="en-seg" role="group" aria-label="English column">
+      <button data-en="dim" aria-pressed="true">Dim</button>
+      <button data-en="show" aria-pressed="false">Show</button>
+      <button data-en="hide" aria-pressed="false">Hide</button>
+    </div>
+    <button class="ctl" id="t-theme" style="margin-left:0">Day / Night</button>
+  </nav>
+
+  <div id="chapters"></div>
+
+  <section class="buy">
+    <div class="k">Free preview ends here</div>
+    <h3>다음 화부터 이야기가 시작됩니다</h3>
+    <p>재회, 위작 미스터리, 그리고 미소 짓는 불도저. 프롤로그·1화가 마음에 드셨다면, 전체 시즌으로 이어서 공부하세요.</p>
+    <a class="btn-primary" href="https://gumroad.com/l/REPLACE-ME" target="_blank" rel="noopener">전체 시즌 보기 · Get the full season</a>
+  </section>
+
+  <div style="text-align:center;margin-top:20px">
+    <a class="btn-ghost" href="https://korean.jiaekim.com/">📚 오늘 만난 단어, 단어장에서 복습하기 · Review in the vocab app</a>
+  </div>
+
+  <footer>
+    「너와 그린 계절」 · 글 담녹 (Damnok) · Study edition by Jiae Kim ·
+    <a href="https://korean.jiaekim.com" target="_blank" rel="noopener">korean.jiaekim.com</a>
+  </footer>
+</div>
+
+<div id="wsheet-bg"></div>
+<aside id="wsheet" role="dialog" aria-modal="true" aria-label="Word note">
+  <div class="grab"></div>
+  <div id="ws-body"></div>
+  <div class="ws-actions">
+    <button type="button" class="n-back" id="ws-close">✕ 닫기 · Close</button>
+    <button type="button" class="n-back" id="ws-notes">전체 노트에서 보기 · See in Notes</button>
+  </div>
+</aside>
+
+<script>
+
+const S=(w,r,k)=>({w,r,k});
+const VOCAB_P={
+  cheotnun:{base:"첫눈",pos:"noun",en:"the first snow of the season",note:"첫 (first) + 눈 (snow). Also: 첫눈에 반하다 = to fall in love at first sight — a quiet omen for a romance that opens in snow."},
+  hultda:{base:"훑다",pos:"verb",en:"to run/sweep along; graze over a surface",note:"Here the wind 훑고 지나간다 — brushes the railing and moves on. A cold, glancing motion."},
+  hilkkeum:{base:"힐끔",pos:"adverb",en:"with a quick sidelong glance (also 힐끗)",note:"Stealing a look you don't want to be caught taking — exactly Ire's mood here."},
+  sok_al_su_eopda:{base:"속을 알 수 없다",pos:"idiom",en:"inscrutable; impossible to read what someone is really thinking",note:"속 = one's inner mind. This describes Ian in one phrase, and the whole plot will be about finally reading him."},
+  akkabuteo:{base:"아까부터",pos:"adverb",en:"since a little while ago",note:"아까 = a moment ago + 부터 = since."},
+  pyeongso_gateumyeon:{base:"평소 같으면",pos:"expression",en:"if it were as usual; normally (he would…)",note:"Sets up a contrast: he is NOT acting normal tonight."},
+  sireomneun_sori:{base:"실없는 소리",pos:"idiom",en:"silly / pointless remarks; nonsense",note:"실없다 = frivolous, not serious. 실없는 소리를 던지다 = to toss out throwaway jokes."},
+  wollae:{base:"원래",pos:"adverb",en:"originally; by nature; inherently",note:"내가 원래 이상하잖아 = 'I'm weird by default' — deflecting with a joke."},
+  ttorai:{base:"또라이",pos:"slang",en:"nutjob; crazy person",note:"Rough, derogatory slang — casual register only. He's quoting the school's opinion of himself."},
+  jeopgeun_geumji:{base:"접근 금지",pos:"phrase",en:"keep away; no approach",note:"Lit. 'approach prohibited,' like a warning sign. Said about himself, half-joking, half-warning."},
+  malgo:{base:"말고",pos:"particle",en:"not ~ (but rather); other than ~",note:"그런 거 말고 = 'not that kind (of thing).' A very common way to redirect."},
+  geujeya:{base:"그제야",pos:"adverb",en:"only then; not until then",note:"Marks the exact beat he finally reacts — the pivot of the scene."},
+  anda_land:{base:"앉다",pos:"verb",en:"to sit; here 'to settle / land' (a snowflake)",note:"-다가 = do one thing, then switch: 앉았다가 녹았다 = landed, then melted. A whole tiny life in one breath."},
+  g_gedoeda:{base:"-게 되다",pos:"grammar",en:"",},
+  gaeinjeon:{base:"개인전",pos:"noun",en:"solo exhibition (of one artist)",note:"cf. 단체전 = group show. The thing Ire insists she'll never have — and the promise hangs on it."},
+  geu_jeongdo:{base:"그 정도",pos:"expression",en:"that much; that level",note:"저 그 정도 아니에요 = 'I'm not that good.' Self-deprecation the story will overturn."},
+  ge_doeeoitda:{base:"-게 되어 있다",pos:"expression",en:"to be bound / destined to; it's set up so that ~",note:"돼 = contraction of 되어. 하게 돼 있어 = 'you're bound to (do it).' See note on -게 되다."},
+  hwaksin_e_chada:{base:"확신에 차다",pos:"idiom",en:"to be full of conviction / certainty",note:"확신 = conviction; 차다 = to be filled. He wears 'the most irresponsible face' with 'the most certain words' — the whole man in one line."},
+  bureuda_price:{base:"부르다",pos:"verb",en:"here 'to name / quote a price' (값을 부르다)",note:"부르다 also = to call (out). 비싸게 부르다 = to name a high price."},
+  eochapi:{base:"어차피",pos:"adverb",en:"anyway; in any case; regardless",note:"어차피 낼 거니까 = 'I'll pay it anyway.' Flags an outcome he treats as already decided."},
+  hapil:{base:"하필",pos:"adverb",en:"of all things / times; why this particular one",note:"Often 하필이면. Loaded with 'why THIS, of all options?' — Ire's later regret is packed into this one word."},
+  oneulttara:{base:"오늘따라",pos:"adverb",en:"today of all days; (unusually) today",note:"-따라 = on this particular ~. Something about tonight is different, and she senses it."},
+  dojang:{base:"도장",pos:"noun",en:"seal; name stamp",note:"Figuratively: 도장을 받아 두다 = to get a seal in advance = to lock something in. He's stamping a claim on her first painting — and, in romance code, on her."},
+  bada_duda:{base:"받아 두다",pos:"verb",en:"to get and keep (for later)",note:"-아/어 두다 = do it in advance and leave it done. The 'in advance' is the whole point: he's securing something before he disappears."},
+  mutda_ask:{base:"묻다",pos:"verb",en:"to ask",note:"⚠ Same spelling as 묻다 'to bury' (seen in 묻은 채 above). The question she couldn't 묻다(ask) gets 묻히다(buried) under snow. The pun is the point."},
+  jatoeseo:{base:"자퇴서",pos:"noun",en:"letter of voluntary withdrawal from school",note:"자퇴 = leaving of one's own accord (vs. 퇴학 = expulsion). It's all he leaves behind."},
+  jageopsil:{base:"작업실",pos:"noun",en:"studio; workspace (esp. an artist's)",note:"Filled with another student's things within three days — as if he was never there."},
+  saheul:{base:"사흘",pos:"noun",en:"three days",note:"Native-Korean day count: 하루·이틀·사흘·나흘·닷새… Learn this row cold; it's everywhere."},
+  mane:{base:"-만에",pos:"expression",en:"after only ~; in the span of ~",note:"사흘 만에 = in just three days. Stresses how fast it happened."},
+  sarajida:{base:"사라지다",pos:"verb",en:"to disappear; vanish",note:"The engine of the whole book: 강이안은 사라졌다."},
+  pier62:{base:"피어 34",pos:"place",en:"Pier 34",note:"A pier on the Hudson off Chelsea, Manhattan — anchoring the story in the downtown-NYC art world."},
+  mandeulda_art:{base:"만들다",pos:"verb",en:"to make; create",note:"그림을 만들다 (lit. 'make pictures') instead of 그리다 ('draw') — framing Ian as producing a body of work, a subtly artistic word choice."}
+};;
+const GRAMMAR_P={
+  g_deon:{form:"-던",title:"the ~ that used to / was ~ing (retrospective)",
+    body:"Attaches to a verb/adjective stem to modify a noun while recalling something ongoing, habitual, or unfinished in the past — usually with a wistful, remembering tone. Compare -(으)ㄴ (a finished action) and -았/었던 (finished but recalled).",
+    exK:"첫눈이 내리던 밤 · 그가 쓰던 작업실",exE:"the night the first snow was falling · the studio he used to use",
+    xK:"자주 가던 카페가 문을 닫았다.",xE:"The café I used to go to often has closed."},
+  g_chae:{form:"-(으)ㄴ 채(로)",title:"while still in a certain state",
+    body:"After a verb (usually the -(으)ㄴ resulting-state form), it means one action happens while another state stays unchanged — 'with ~ still done/on.' Here 턱을 묻은 채 = with her chin still buried. Note 묻다 = 'bury/nestle,' not 'ask.'",
+    exK:"턱을 반쯤 묻은 채 올려다보았다",exE:"looked up with her chin still half-buried",
+    xK:"신발을 신은 채로 들어왔다.",xE:"He came in with his shoes still on."},
+  g_eoyahaetda:{form:"-았/었어야 했다",title:"should have (done) — regret",
+    body:"Expresses regret or reproach about something that didn't happen: 'I should have ~ (but didn't).' Often paired with -는데 for a lingering, unfinished ache — exactly the mood here.",
+    exK:"그때 물었어야 했다.",exE:"She should have asked then (but didn't).",
+    xK:"좀 더 일찍 출발했어야 했는데.",xE:"We should have set off a bit earlier…"},
+  g_gedoeda:{form:"-게 되다",title:"to come to / end up ~",
+    body:"Marks a change of state or an outcome that comes about — often not by one's own will: 'come to / get to / end up ~.' Watch the tense trick here: mid-way through past-tense narration it switches to present (기억하게 된다), which lets the narrator peek into the future — a foreshadowing device meaning 'this will matter.' Related: -게 되어 있다 = to be bound to.",
+    exK:"그 짧은 순간을 아주 오래 기억하게 된다",exE:"she comes to remember that brief moment for a very long time",
+    xK:"살다 보면 알게 돼요.",xE:"As you go through life, you come to understand."},
+  g_deuti:{form:"마치 … -는/ㄴ/다는 듯이",title:"(just) as if ~",
+    body:"마치 pairs with a -듯이 clause for a vivid comparison: '(just) as if ~.' Very common with 없었다는/있었다는 듯이 = 'as if it had(n't) been.'",
+    exK:"마치 처음부터 그런 사람은 없었다는 듯이",exE:"as if no such person had existed from the start",
+    xK:"마치 아무 일도 없었다는 듯이 웃었다.",xE:"He smiled as if nothing had happened."}
+};;
+const BLOCKS_P=[
+ {t:'n',ko:["첼시에 ",S("첫눈","cheotnun","v"),"이 ",S("내리던","g_deon","g")," 밤이었다."],en:"It was the night the first snow fell over Chelsea."},
+ {t:'n',ko:["허드슨강에서 불어온 바람이 ",S("피어 34","pier62","v"),"의 난간을 ",S("훑고","hultda","v")," 지나갔다."],en:"Wind off the Hudson swept along the railing of Pier 62 and moved on."},
+ {t:'n',ko:["이레는 목도리에 턱을 반쯤 ",S("묻은 채","g_chae","g"),", 옆에 선 남자를 ",S("힐끔","hilkkeum","v")," 올려다보았다."],en:"Chin buried halfway in her scarf, Ire stole a glance up at the man beside her."},
+ {t:'n',ko:["강이안. 학교에서 제일 소문이 나쁘고, 제일 그림을 잘 ",S("만들고","mandeulda_art","v"),", 제일 ",S("속을 알 수 없는","sok_al_su_eopda","v")," 4학년."],en:"Kang Ian. The senior with the worst reputation in school, who made the best paintings, and whose mind no one could read."},
+ {t:'n',ko:["그는 ",S("아까부터","akkabuteo","v")," 강 건너 저지 시티의 불빛만 보고 있었다."],en:"He'd been staring for a while now at nothing but the lights of Jersey City across the river."},
+ {t:'n',ko:["",S("평소 같으면","pyeongso_gateumyeon","v")," 3초에 한 번씩 ",S("실없는 소리","sireomneun_sori","v"),"를 던졌을 사람이."],en:"Normally he'd have tossed off some pointless remark every three seconds."},
+ {t:'d',ko:["선배."],en:"Sunbae."},
+ {t:'d',ko:["왜."],en:"What."},
+ {t:'d',ko:["오늘 좀 이상해요."],en:"You're a little off today."},
+ {t:'d',ko:["내가 ",S("원래","wollae","v")," 이상하잖아. 학교 게시판 안 봤냐? 강이안, ",S("또라이","ttorai","v"),", ",S("접근 금지","jeopgeun_geumji","v"),"."],en:"I'm off by default. Didn't you read the school board? Kang Ian — nutjob — keep your distance."},
+ {t:'d',ko:["그런 이상한 거 ",S("말고","malgo","v"),"요."],en:"Not that kind of off."},
+ {t:'n',ko:["이안이 ",S("그제야","geujeya","v")," 고개를 돌렸다. 눈송이 하나가 그의 속눈썹에 ",S("앉았다가","anda_land","v")," 녹았다."],en:"Only then did Ian turn his head. A single snowflake settled on his eyelashes and melted."},
+ {t:'n',ko:["이레는 그 짧은 순간을, 이상하게도 아주 오래 ",S("기억하게 된다","g_gedoeda","g"),"."],en:"That brief moment — strangely — Ire would come to remember for a very long time."},
+ {t:'d',ko:["한이레."],en:"Han Ire."},
+ {t:'d',ko:["네."],en:"Yes."},
+ {t:'d',ko:["너 나중에 ",S("개인전","gaeinjeon","v")," 하면."],en:"When you have your solo show someday."},
+ {t:'d',ko:["안 해요. 저 ",S("그 정도","geu_jeongdo","v")," 아니에요."],en:"I won't. I'm not that good."},
+ {t:'d',ko:["",S("하게 돼 있어","ge_doeeoitda","v"),". 넌 몰라도 난 알아."],en:"You're bound to. You may not know it, but I do."},
+ {t:'n',ko:["그는 늘 이런 식이었다. 세상에서 제일 무책임한 얼굴로, 세상에서 제일 ",S("확신에 찬","hwaksin_e_chada","v")," 말을 했다."],en:"He was always like this — saying the most certain things in the world with the most irresponsible face in the world."},
+ {t:'d',ko:["하게 되면요?"],en:"And if I do?"},
+ {t:'d',ko:["첫 번째 그림. 그거 내 거다. 아무한테도 팔지 마."],en:"The first painting. That one's mine. Don't sell it to anyone."},
+ {t:'d',ko:["……비싸게 ",S("부를","bureuda_price","v")," 건데."],en:"…I'll name a high price."},
+ {t:'d',ko:["불러. ",S("어차피","eochapi","v")," 낼 거니까."],en:"Name it. I'll pay it anyway."},
+ {t:'n',ko:["이레는 웃었다. 입김이 하얗게 흩어졌다."],en:"Ire laughed. Her breath scattered white into the air."},
+ {t:'n',ko:["그때 ",S("물었어야 했다","g_eoyahaetda","g"),". 왜 ",S("하필","hapil","v")," 첫 번째냐고."],en:"She should have asked then — why the first one, of all paintings."},
+ {t:'n',ko:["왜 ",S("오늘따라","oneulttara","v")," 꼭 ",S("도장","dojang","v"),"이라도 ",S("받아 두려는","bada_duda","v")," 사람처럼 구느냐고."],en:"Why, today of all days, he acted like someone bent on stamping a seal on it in advance."},
+ {t:'n',ko:["",S("묻지 못한","mutda_ask","v")," 질문은 밤새 내린 눈에 덮였다."],en:"The question she never asked was buried under the snow that fell all night."},
+ {t:'n',ko:["다음 날, 강이안은 ",S("사라졌다","sarajida","v"),"."],en:"The next day, Kang Ian was gone."},
+ {t:'n',ko:["전화기는 꺼져 있었고, 학교에는 ",S("자퇴서","jatoeseo","v"),"가 남아 있었고, 그가 ",S("쓰던","g_deon","g")," ",S("작업실","jageopsil","v")," 자리는 ",S("사흘","saheul","v")," ",S("만에","mane","v")," 다른 학생의 짐으로 채워졌다."],en:"His phone was off, a withdrawal letter was all he left at the school, and within three days the spot where his studio had been was filled with another student's things."},
+ {t:'n',ko:["마치 처음부터 그런 사람은 ",S("없었다는 듯이","g_deuti","g"),"."],en:"As if no such person had ever existed."},
+ {t:'n',ko:["그리고 7년이 지났다."],en:"And seven years passed."}
+];;
+const QUIZ_P=[
+ {tag:"Reading between the lines",q:"강이안의 “첫 번째 그림, 그거 내 거다. 아무한테도 팔지 마.” — 이 말의 진짜 속뜻에 가장 가까운 것은?",sub:"He's not really shopping for art.",
+  opts:[{ko:"그림 한 점 공짜로 챙기려는 속셈이다.",glo:"He just wants a freebie.",ok:false},
+        {ko:"그녀의 미래에 — 그리고 어쩌면 그녀에게 — 조용히 도장을 찍는 중이다.",glo:"He's quietly staking a claim on her future (and maybe on her).",ok:true},
+        {ko:"첫 그림이 제일 비쌀 거라 계산한 투자다.",glo:"A calculated bet that her debut will be worth the most.",ok:false}],
+  ex:"The scene loads him with 받아 두다 (secure in advance) and 도장 (a seal/claim). Naming the FIRST painting, right before he vanishes, is romance-novel code for 'I'm claiming this — and coming back.'"},
+ {tag:"Spot the pun",q:"이 프롤로그에는 같은 단어가 정반대 뜻으로 두 번 나옵니다. 어떤 단어일까요?",sub:"One spelling, two opposite lives.",
+  opts:[{ko:"내리다",glo:"to fall / to get off",ok:false},
+        {ko:"묻다",glo:"to bury  ↔  to ask",ok:true},
+        {ko:"부르다",glo:"to call / to name a price",ok:false},
+        {ko:"채우다",glo:"to fill",ok:false}],
+  ex:"턱을 묻은 채 (bury) vs 묻지 못한 질문 (ask) — and then the snow 묻는다(buries) the very question she couldn't 묻다(ask). The author buried a pun in plain sight."},
+ {tag:"Right expression",q:"친구가 계속 쓸데없는 농담만 던질 때, 딱 맞는 표현은?",sub:"Pick the phrase that fits.",
+  opts:[{ko:"실없는 소리",glo:"pointless / silly remarks",ok:true},
+        {ko:"확신에 찬 말",glo:"words full of conviction",ok:false},
+        {ko:"접근 금지",glo:"keep away",ok:false}],
+  ex:"실없는 소리(를) 하다/던지다 = to talk nonsense / crack throwaway jokes. That's exactly what Ian usually does — and pointedly isn't doing tonight."},
+ {tag:"Grammar · -던",q:"“예전에 그가 쓰던 그 공간”을 가리키려면 빈칸에 뭐가 들어갈까요?  →  그가 ___ 작업실",sub:"A space he used to use.",
+  opts:[{ko:"쓰던",glo:"-던: used to / was ~ing (recalled)",ok:true},
+        {ko:"쓴",glo:"-(으)ㄴ: simply did / finished",ok:false},
+        {ko:"쓸",glo:"-(으)ㄹ: will / to be used",ok:false}],
+  ex:"-던 recalls an ongoing/habitual past with a wistful tone — perfect for a studio he 'used to' work in, now erased."},
+ {tag:"Adverb nuance",q:"소풍 가는 날인데 비가 온다! 억울함을 담아: “왜 ___ 오늘 비가 오지?”",sub:"Of all the days…",
+  opts:[{ko:"하필",glo:"of all days / why THIS one",ok:true},
+        {ko:"원래",glo:"originally / by nature",ok:false},
+        {ko:"어차피",glo:"anyway / regardless",ok:false},
+        {ko:"반쯤",glo:"about halfway",ok:false}],
+  ex:"하필 carries the sting of 'why, of ALL times, this one?' It's the same word behind Ire's regret: 왜 하필 첫 번째냐고."},
+ {tag:"Foreshadowing",q:"과거형으로 흐르던 문장이 갑자기 “…아주 오래 기억하게 된다”처럼 현재형으로 바뀝니다. 왜일까요?",sub:"Why does the tense jump to present?",
+  opts:[{ko:"작가가 시제를 헷갈린 실수다.",glo:"The author slipped up.",ok:false},
+        {ko:"화자가 미래를 미리 들여다보는 복선 장치다 — “이건 나중에 중요해진다”는 신호.",glo:"The narrator peeks into the future — a foreshadowing 'this will matter.'",ok:true},
+        {ko:"그 순간이 지금도 문자 그대로 이어지고 있어서.",glo:"The moment is literally still happening.",ok:false}],
+  ex:"That present-tense 기억하게 된다 inside a past narration is a deliberate flash-forward. Korean writers use -게 된다 like this to plant a seed: remember this moment."}
+];;
+const VOCAB_E={
+  apduda:{base:"앞두다",pos:"expression",en:"to have (an event) coming up / just ahead",note:"오프닝을 하루 앞두다 = with the opening one day away. Often 시험을 앞두고, 개막을 앞두고 — 'on the eve of ~.'"},
+  sigajeon:{base:"시가전",pos:"noun",en:"urban / street warfare",note:"A metaphor for chaos: 전쟁 중에서도 시가전 = 'even among wars, street-to-street fighting' — the worst kind of mad-scramble morning."},
+  mot_mideopda:{base:"못 미덥다",pos:"expression",en:"unconvinced; doubtful of someone's reliability",note:"미덥다 = trustworthy, dependable; 못 미덥다는 얼굴 = a 'you-sure-about-that?' look."},
+  paljjang:{base:"팔짱을 끼다",pos:"idiom",en:"to fold one's arms across the chest",note:"Body language of doubt, judgment, or standing back — exactly the boss here."},
+  geuphan_bul:{base:"급한 불(이) 나다",pos:"idiom",en:"an urgent fire breaks out = a pressing emergency comes up",note:"cf. 급한 불부터 끄다 = 'put out the urgent fire first,' i.e. deal with the crisis before anything else."},
+  sokbo:{base:"속보",pos:"noun",en:"breaking news; a news flash"},
+  nyt:{base:"뉴욕 타임즈",pos:"place",en:"The New York Times",note:"세라가 든 화면의 출처 — 업계지가 아니라 대형 일간지라, 인수 뉴스의 무게가 더 커진다."},
+  oncdo:{base:"온도를 재다",pos:"idiom",en:"to take the temperature of; to gauge (a feeling)",note:"웃음의 온도를 재다 = to gauge what a smile really means. 5년을 봐도 못 읽은 미소 — 제임스 로가 어떤 사람인지 한 줄로 말해준다."},
+  seoreun_dul:{base:"서른 둘",pos:"number",en:"thirty-two (years old)",note:"native-Korean age: 서른(30) + 둘(2). Ages are counted this way: 스물·서른·마흔·쉰."},
+
+  dandok:{base:"단독",pos:"noun",en:"an exclusive (report); a scoop",note:"[단독] is the tag Korean outlets slap on a story no one else has yet."},
+  jeongyeok_insu:{base:"전격 인수",pos:"expression",en:"a sudden / lightning takeover (acquisition)",note:"전격 = blitz, out-of-nowhere; 인수 = acquisition, taking over a company."},
+  naejeong:{base:"내정",pos:"noun",en:"being (tentatively) lined up / earmarked for a post before it's official",note:"디렉터에 K 내정 = 'K is set to be named director.'"},
+  geogin_museun:{base:"거긴 무슨",pos:"expression",en:"'as if!' / 'no way it's just ~'",note:"A dismissive 무슨 that waves off what was just said. 거긴 무슨 갤러리 = 'call that a gallery? please.'"},
+  byeonbang:{base:"변방",pos:"noun",en:"the periphery; a frontier; a backwater far from the center of power"},
+  meokda_take:{base:"먹다",pos:"verb (slang)",en:"to swallow up / take over (a business, a market)",note:"우리 같은 변방까지 먹냐 = 'they're gobbling up even a backwater like us?' Everyday slang for corporate conquest."},
+  jjada_pay:{base:"짜다",pos:"adjective",en:"(of pay) stingy, measly",note:"Literally 'salty.' 월급이 짜다 = the salary is miserly. Its opposite in feel is 후하다."},
+  yageun:{base:"야근",pos:"noun",en:"working overtime, esp. late into the night"},
+  huhada:{base:"후하다",pos:"adjective",en:"generous; ample; liberal",note:"야근은 후했다 = 'overtime was plentiful' — a dry joke: the one thing this job gives generously is extra hours."},
+  tongjjaero:{base:"통째로",pos:"adverb",en:"as a whole; entirely; in one lump",note:"삶이 통째로 걸려 있다 = her whole life is riding on it."},
+  eukkeun:{base:"어깨를 으쓱하다",pos:"idiom",en:"to shrug one's shoulders",note:"The universal 'who knows / not my problem' gesture."},
+  badak_scene:{base:"바닥",pos:"noun (slang)",en:"a scene / field / industry circle",note:"첼시 바닥 = the Chelsea art world. Literally 'floor,' but 이 바닥 = 'this line of work / this scene.'"},
+  madangbal:{base:"마당발",pos:"idiom",en:"a super-connected person who seems to know everyone",note:"Lit. 'wide feet.' High praise (and a little wary) in a networking-driven business."},
+  keunmul:{base:"큰물",pos:"noun",en:"a flood; 'big water'",note:"Proverb here: 큰물이 들어오면 배는 뜬다 ≈ a rising tide lifts all boats (뜨다 = to float, to rise). The boss's rosy spin on the takeover."},
+  anmok:{base:"안목",pos:"noun",en:"an eye (for quality); discernment; taste",note:"The single most prized trait in the art world — the ability to see what's good before others do."},
+  goemul:{base:"괴물",pos:"noun",en:"a monster",note:"Figuratively: 안목은 괴물 = 'his eye is a monster' — freakishly, unfairly good."},
+  jaeang:{base:"재앙",pos:"noun",en:"a disaster; a catastrophe",note:"성격은 재앙 = 'his personality is a disaster.' Strong, and here comically blunt."},
+  bulldozer:{base:"미소 짓는 불도저",pos:"expression",en:"'the smiling bulldozer'",note:"His London nickname: he flattens everything in his way — while smiling the whole time. (미소를 짓다 = to wear a smile.)"},
+  nam_yaegi:{base:"남 얘기",pos:"expression",en:"someone else's business / story",note:"남 = another person. 남 얘기처럼 웃다 = to laugh as if it had nothing to do with you — a line loaded with dramatic irony here."},
+  hwabaek:{base:"화백",pos:"noun",en:"an honorific title for a master painter",note:"백향 화백 = 'Master Painter Baekhyang.' 화가 is a plain 'painter'; 화백 is reverent."},
+  yujakjeon:{base:"유작전",pos:"noun",en:"a posthumous exhibition",note:"유작 = works left behind at death + 전(시) = exhibition. This show is the engine of the whole plot."},
+  art_handler:{base:"아트 핸들러",pos:"noun",en:"an art handler",note:"The specialist who packs, moves, mounts, and de-installs artworks — skilled, careful, and (here) already gone home."},
+  hayeokjang:{base:"하역장",pos:"noun",en:"a loading dock; the freight loading/unloading bay"},
+  jasan:{base:"자산",pos:"noun",en:"an asset",note:"Joke: 넌 어깨가 자산이야 = 'your shoulders are your asset' — Ire psyching herself up to haul a crate alone."},
+  son_daeda:{base:"손을 대다",pos:"idiom",en:"to lay hands on; to touch; to start work on something",note:"크레이트에 손을 댔을 때 = the moment she set to work on the crate — and that's when the voice comes."},
+  yeojeonhada:{base:"여전하다",pos:"adjective",en:"to be the same as ever; unchanged",note:"여전하네 = 'you haven't changed one bit.' Seven years, one word — and he's back."},
+  gyeonggye:{base:"경계",pos:"noun",en:"a boundary; a border; the dividing line",note:"빛과 어둠의 경계에 서 있다 = standing on the border of light and dark — a very deliberate framing."},
+  aesseuda:{base:"애쓰다",pos:"verb",en:"to try hard; to struggle; to make a real effort",note:"잊으려고 애쓰다 = to struggle to forget."},
+  gagin:{base:"각인되다",pos:"verb",en:"to be engraved / imprinted (on the mind)",note:"각인 = an imprint, a brand. The more she fought to forget, the more sharply his face was burned in."},
+  nunmae:{base:"눈매",pos:"noun",en:"the shape / look of one's eyes",note:"눈매가 휘어지다 = the eyes curve — i.e. crinkle into a smile. Korean often reads emotion in the 눈매."},
+  natseolda:{base:"낯설다",pos:"adjective",en:"unfamiliar; strange",note:"Opposite of 익숙하다. The cruel twist: the smile is exactly the same, 그래서 더 낯설다 — and that's what makes it stranger."}
+};;
+const GRAMMAR_E={
+  g1_ppeon:{form:"-(으)ㄹ 뻔하다",title:"almost (did) — but didn't",
+    body:"Marks something that nearly happened but was avoided at the last second. Always in the past: -(으)ㄹ 뻔했다.",
+    exK:"수평계를 놓칠 뻔했다.",exE:"She almost dropped the level.",
+    xK:"길에서 넘어질 뻔했어.",xE:"I almost fell over in the street."},
+  g1_deora:{form:"-더라(고)",title:"I noticed / it turns out ~ (firsthand past observation)",
+    body:"Reports something the speaker personally saw or realized in the past, often with mild surprise. 넌 꼭 제일 무거운 걸 혼자 들더라 = 'I've noticed you always haul the heaviest thing alone' — and the quiet sting is that he was watching.",
+    exK:"넌 꼭, 제일 무거운 걸 혼자 들더라.",exE:"You always carry the heaviest thing by yourself, I've noticed.",
+    xK:"그 집, 생각보다 맛있더라.",xE:"That place was tastier than I expected (I found)."},
+  g1_deuthada:{form:"-(으)ㄴ/는 듯하다",title:"seems / looks as if ~",
+    body:"Softly states an impression or a guess: 'it seems ~.' As a noun-modifier: 어디선가 본 듯한 얼굴 = a face that seems seen somewhere.",
+    exK:"어디선가 본 듯한 얼굴이었다.",exE:"It was a face he seemed to have seen somewhere.",
+    xK:"밖에 비가 온 듯하다.",xE:"It seems it rained outside."},
+  g1_hearsay:{form:"-대 / -래 / -다던데",title:"they say ~ / I heard ~ (hearsay)",
+    body:"Contractions of -다고 해 / -라고 해: passing along what you heard. -대 (statements), -래 (with 이다/명령), -다던데 adds 'I heard ~, and…' The gossip in this scene runs entirely on these.",
+    exK:"성격은 재앙이래 · 별명이 불도저였다던데 · 오너 일가라더라.",exE:"They say his temper's a disaster · his nickname was 'bulldozer,' apparently · he's family of the owners, I heard.",
+    xK:"내일 눈 온대.",xE:"They say it'll snow tomorrow."},
+  g1_mankeum:{form:"-(으)ㄴ/는 만큼",title:"to the same extent that ~; as much as ~",
+    body:"Sets up a proportion: 'as much as A, so B.' 잊으려고 애쓴 만큼 각인됐다 = engraved exactly to the degree she tried to forget.",
+    exK:"잊으려고 애쓴 만큼 정확히 각인된 얼굴.",exE:"A face imprinted exactly as deeply as she'd struggled to forget it.",
+    xK:"노력한 만큼 결과가 나온다.",xE:"You get results in proportion to your effort."},
+  g1_julalda:{form:"-(으)ㄴ/는 줄 알았다",title:"(mistakenly) thought that ~",
+    body:"'I thought ~ (but I was wrong).' The default reading is a wrong assumption now corrected — which is why the closing line lands so hard.",
+    exK:"그때까지는 정말 남 얘기인 줄 알았다.",exE:"Until then she really thought it was someone else's story.",
+    xK:"문이 열린 줄 알았어.",xE:"I thought the door was open (it wasn't)."}
+};;
+const BLOCKS_E=[
+ {t:'d',ko:["한이레! 3번 벽 레벨 다시 봐. 왼쪽이 2밀리 처졌어!"],en:"Han Ire! Check the level on wall 3 again — the left side's sagging by 2 millimeters!"},
+ {t:'d',ko:["대표님 마음이 처진 거고요, 수평계는 정직합니다!"],en:"That's your mood sagging, boss — the level tells no lies!"},
+ {t:'n',ko:["갤러리 반디의 오전은 언제나 전쟁이었다. 오프닝을 하루 ",S("앞둔","apduda","v")," 오전은 전쟁 중에서도 ",S("시가전","sigajeon","v"),"이었다."],en:"Mornings at Gallery Bandi were always a war. The morning before an opening was, among wars, urban combat."},
+ {t:'n',ko:["이레는 사다리 위에서 수평계를 들어 보이며 외쳤다. 아래에서는 제임스 로 대표가 ",S("못 미덥다는","mot_mideopda","v")," 얼굴로 ",S("팔짱을 끼고","paljjang","v")," 서 있었고, 그 옆에서 시니어 갤러리스트 문세라가 하이힐로 바닥을 또각또각 두드리며 태블릿을 넘기고 있었다."],en:"Ire waved the level from atop the ladder and shouted. Below, director James Roh stood with arms folded and an unconvinced look, while beside him senior gallerist Mun Sera clicked her heels on the floor and swiped through a tablet."},
+ {t:'d',ko:["이레야, 내려와. 그거보다 ",S("급한 불 났어","geuphan_bul","v"),"."],en:"Ire, come down. There's a more urgent fire than that."},
+ {t:'d',ko:["불이요? 스프링클러 오작동이면 저 진짜 웁니다. 어제도 크레이트 두 개 다시 포장……."],en:"A fire? If the sprinklers misfired I will actually cry. I re-packed two crates just yesterday—"},
+ {t:'d',ko:["그런 불 말고."],en:"Not that kind of fire."},
+ {t:'n',ko:["세라가 태블릿을 들어 보였다. 화면에는 ",S("뉴욕 타임즈","nyt","v"),"에 ",S("속보","sokbo","v"),"가 떠 있었다."],en:"Sera held up the tablet. On the screen was a breaking story in The New York Times."},
+ {t:'h',ko:["[",S("단독","dandok","v"),"] 로덴 파인아트, 첼시 '갤러리 반디' ",S("전격 인수","jeongyeok_insu","v"),"… 뉴욕 총괄 디렉터에 오너 일가 'K' ",S("내정","naejeong","v")],en:"[EXCLUSIVE] Roden Fine Art in sudden takeover of Chelsea's 'Gallery Bandi'… owner-family 'K' set to be New York director"},
+ {t:'n',ko:["사다리 위에서 이레는 잠깐 수평계를 ",S("놓칠 뻔했다","g1_ppeon","g"),"."],en:"Up on the ladder, Ire nearly dropped the level."},
+ {t:'d',ko:["인수요? 우리가요? 누구한테요?"],en:"A takeover? Us? By whom?"},
+ {t:'d',ko:["로덴이라잖아. 로! 덴! 런던, 홍콩, 그리고 이제 여기."],en:"Roden, it says. Ro! Den! London, Hong Kong — and now here."},
+ {t:'d',ko:["",S("거긴 무슨","geogin_museun","v"),", 갤러리가 아니라 제국이잖아요."],en:"Call that a gallery? That's not a gallery, it's an empire."},
+ {t:'d',ko:["그러니까. 제국이 왜 우리 같은 ",S("변방","byeonbang","v"),"까지 ",S("먹냐","meokda_take","v")," 이거지."],en:"Exactly. Why would an empire bother swallowing a backwater like us — that's the question."},
+ {t:'n',ko:["이레는 사다리를 내려오며 전시장을 한 바퀴 둘러보았다. 하얀 벽, 익숙한 시멘트 바닥, 구석의 낡은 이젤까지. 5년을 다닌 직장이었다. 월급은 ",S("짜고","jjada_pay","v")," ",S("야근","yageun","v"),"은 ",S("후했지만","huhada","v"),", 이곳엔 이레가 붓 대신 잡은 삶이 ",S("통째로","tongjjaero","v")," 걸려 있었다."],en:"Coming down the ladder, Ire took a slow lap of the gallery. The white walls, the familiar cement floor, the battered easel in the corner. Five years at this job. The pay was measly and the overtime generous, but her whole life — the one she'd grabbed instead of a brush — hung on this place."},
+ {t:'d',ko:["대표님은 알고 계셨어요?"],en:"Did you know, boss?"},
+ {t:'n',ko:["제임스 로는 ",S("어깨를 으쓱했다","eukkeun","v"),". 50대 중반, 첼시 ",S("바닥","badak_scene","v"),"에서 모르는 사람이 없는 ",S("마당발","madangbal","v"),". 그는 늘 웃는 얼굴이었고, 이레는 5년이 지나도록 그 웃음의 ",S("온도를 잰","oncdo","v")," 적이 없었다."],en:"James Roh shrugged. Mid-fifties, a man everyone in the Chelsea scene knew. He always wore a smile, and in five years Ire had never once managed to take its temperature."},
+ {t:'d',ko:["경영이라는 게 그렇지, 뭐. ",S("큰물","keunmul","v"),"이 들어오면 배는 뜨는 거야. 너희 월급도 뜰 거고."],en:"That's just how business goes. When the big water comes in, the boats rise — your paychecks included."},
+ {t:'d',ko:["새 디렉터는요? 기사엔 'K'라고만……."],en:"And the new director? The article just says 'K'…"},
+ {t:'d',ko:["오너 일가라더라. ",S("서른 둘","seoreun_dul","v"),". 홍콩 지점을 이 년 만에 두 배로 키웠고, ",S("안목","anmok","v"),"은 ",S("괴물","goemul","v"),", 성격은……."],en:"Family of the owners, apparently. Thirty-two. Doubled the Hong Kong branch in two years — an eye like a monster, and a temper that's…"},
+ {t:'n',ko:["세라가 끼어들었다."],en:"Sera cut in."},
+ {t:'d',ko:["성격은 ",S("재앙","jaeang","v"),"이래. 런던에서 별명이 '",S("미소 짓는 불도저","bulldozer","v"),"'였다던데."],en:"A temper that's a disaster, they say. In London his nickname was 'the smiling bulldozer,' apparently."},
+ {t:'d',ko:["와. 최악의 조합이네요. 웃으면서 미는 거잖아요."],en:"Wow. Worst possible combo. He smiles while he shoves."},
+ {t:'n',ko:["이레는 ",S("남 얘기","nam_yaegi","v"),"처럼 웃었다. 그때까지는 정말 남 얘기인 ",S("줄 알았다","g1_julalda","g"),"."],en:"Ire laughed as if it were someone else's story. Until then, she really thought it was."},
+ {t:'n',ko:["밤 10시. 오프닝 준비는 끝났는데, 마지막 반입 트럭이 문제였다."],en:"Ten p.m. The opening was ready — but the last delivery truck was the problem."},
+ {t:'n',ko:["백향 ",S("화백","hwabaek","v")," ",S("유작전","yujakjeon","v"),"에 들어갈 대형 크레이트 하나가 운송사 착오로 이 시간에야 도착한 것이다. ",S("아트 핸들러","art_handler","v"),"들은 이미 퇴근했고, 내일 아침엔 통로가 케이터링 짐으로 막힌다. 결론은 하나였다."],en:"A large crate bound for the posthumous show of Master Painter Baekhyang had, through a shipper's mix-up, only just arrived at this hour. The art handlers had already gone home, and by morning the aisles would be blocked with catering. There was only one conclusion."},
+ {t:'d',ko:["오늘 밤 안에 들여놔야 하는데."],en:"It has to go inside tonight."},
+ {t:'n',ko:["이레는 ",S("하역장","hayeokjang","v"),"에 홀로 서서 2미터짜리 크레이트를 올려다보았다. 운반할 장비는 있다. 경사로도 있다. 없는 건 사람뿐이다."],en:"Ire stood alone at the loading dock, looking up at the two-meter crate. There was equipment to move it. There was a ramp. The only thing missing was people."},
+ {t:'d',ko:["……가자, 한이레. 너는 할 수 있다. 넌 어깨가 ",S("자산","jasan","v"),"이야."],en:"…Let's go, Han Ire. You can do this. Your shoulders are your asset."},
+ {t:'n',ko:["장갑을 고쳐 끼고 크레이트 모서리에 ",S("손을 댔을","son_daeda","v")," 때였다."],en:"She'd just re-set her gloves and laid a hand on the corner of the crate when—"},
+ {t:'d',ko:["",S("여전하네","yeojeonhada","v"),"."],en:"Same as ever."},
+ {t:'n',ko:["낮은 목소리가 등 뒤에서 들렸다."],en:"A low voice came from behind her."},
+ {t:'d',ko:["넌 꼭, 제일 무거운 걸 혼자 ",S("들더라","g1_deora","g"),"."],en:"You always haul the heaviest thing alone, I've noticed."},
+ {t:'n',ko:["이레는 돌아보았다. 하역장의 백열등은 절반이 나가 있었고, 남자는 빛과 어둠의 ",S("경계","gyeonggye","v"),"에 서 있었다. 긴 코트, 느슨하게 푼 넥타이, 그리고 어디선가 ",S("본 듯한","g1_deuthada","g"),"—아니."],en:"Ire turned. Half the dock's bulbs had gone out, and the man stood on the border of light and dark. A long coat, a loosely undone tie, and a face she seemed to have seen somewhere — no."},
+ {t:'n',ko:["어디선가가 아니었다."],en:"Not 'somewhere.'"},
+ {t:'n',ko:["7년 동안, 잊으려고 ",S("애쓴","aesseuda","v")," ",S("만큼","g1_mankeum","g")," 정확히 ",S("각인된","gagin","v")," 얼굴이었다."],en:"For seven years, a face imprinted exactly as deeply as she had struggled to forget it."},
+ {t:'d',ko:["……선배?"],en:"…Sunbae?"},
+ {t:'d',ko:["디렉터."],en:"Director."},
+ {t:'n',ko:["남자가 한 걸음 빛 안으로 들어왔다. ",S("눈매","nunmae","v"),"가 휘어졌다. 그 웃음은 7년 전과 똑같았고, 그래서 더 ",S("낯설었다","natseolda","v"),"."],en:"The man stepped into the light. His eyes curved. That smile was identical to seven years ago — and that made it stranger still."},
+ {t:'d',ko:["내일부터는 그렇게 불러야 할 거다, 한이레."],en:"From tomorrow, that's what you'll have to call me, Han Ire."},
+ {t:'n',ko:["강이안이 거기 서 있었다."],en:"Kang Ian was standing there."}
+];
+const QUIZ_E=[
+ {tag:"Idiom",q:"사무실에서 갑자기 더 급한 일이 터졌을 때 쓰는 표현은?",sub:"Pick the phrase for a sudden emergency.",
+  opts:[{ko:"급한 불이 났다",glo:"an urgent fire broke out",ok:true},
+        {ko:"팔짱을 끼다",glo:"to fold one's arms",ok:false},
+        {ko:"어깨가 자산이다",glo:"one's shoulders are an asset",ok:false},
+        {ko:"눈매가 휘어지다",glo:"one's eyes curve (into a smile)",ok:false}],
+  ex:"급한 불(이) 나다 / 급한 불부터 끄다 = 'the urgent fire' — the crisis you drop everything for. Exactly what Sera means by 그거보다 급한 불 났어."},
+ {tag:"Grammar · hearsay",q:"친구한테서 “강이안 성격이 재앙이다”라고 들은 걸 그대로 옮기려면?",sub:"Passing along a rumor.",
+  opts:[{ko:"강이안 성격이 재앙이야.",glo:"…is a disaster. (you asserting it)",ok:false},
+        {ko:"강이안 성격이 재앙이래.",glo:"…is a disaster, they say. (hearsay)",ok:true},
+        {ko:"강이안 성격이 재앙일까?",glo:"…could it be a disaster? (wondering)",ok:false}],
+  ex:"-이래 = -이라고 해: 'they say ~.' The whole gossip scene runs on -대/-래/-다던데 — the sound of secondhand information."},
+ {tag:"Reading between the lines",q:"'미소 짓는 불도저'라는 별명이 강이안에 대해 말해 주는 것에 가장 가까운 것은?",sub:"What does the nickname really say?",
+  opts:[{ko:"성격이 밝고 사람 좋은 타입이다.",glo:"He's a sunny, easygoing guy.",ok:false},
+        {ko:"밀어붙여 다 갖되, 끝까지 웃는다 — 매력적이면서 꿈쩍도 안 한다.",glo:"He forces his way and gets it all — while smiling. Charming and immovable at once.",ok:true},
+        {ko:"공사장에서 중장비를 몬다.",glo:"He literally operates heavy machinery.",ok:false}],
+  ex:"불도저(bulldozer) flattens everything; 미소 짓는(smiling) means he never stops being pleasant while doing it. The threat and the charm are the same gesture."},
+ {tag:"Word pair",q:"이레의 직장을 가장 잘 묘사한 짝은?  “월급은 ___, 야근은 ___.”",sub:"Fill in the wry description.",
+  opts:[{ko:"짜고 / 후했다",glo:"pay = stingy, overtime = plentiful",ok:true},
+        {ko:"후하고 / 짰다",glo:"pay = generous, overtime = scarce",ok:false},
+        {ko:"짜고 / 짰다",glo:"both stingy",ok:false}],
+  ex:"짜다 = (pay) measly; 후하다 = generous/ample. The joke: the only thing this job hands out generously is overtime."},
+ {tag:"Dramatic irony · -줄 알다",q:"“그때까지는 정말 남 얘기인 줄 알았다.” 이 문장이 독자에게 슬쩍 흘리는 것은?",sub:"Why does this line feel like a warning?",
+  opts:[{ko:"곧 그 이야기가 바로 자기 이야기가 된다는 것.",glo:"That story is about to become very much her own.",ok:true},
+        {ko:"이레가 남의 소문을 옮기고 있었다는 것.",glo:"She was just spreading gossip.",ok:false},
+        {ko:"이레가 뉴스를 잘못 들었다는 것.",glo:"She misheard the news.",ok:false}],
+  ex:"-(으)ㄴ 줄 알았다 = 'thought (wrongly).' Saying she thought it was someone else's story is the narrator quietly promising you it isn't."},
+ {tag:"Grammar · -더라",q:"강이안의 “넌 꼭, 제일 무거운 걸 혼자 들더라.” 여기서 -더라에 담긴 속뜻은?",sub:"What does -더라 smuggle in?",
+  opts:[{ko:"예전에 그가 직접 지켜본 그녀의 습관을 떠올리는 것 — 즉, 그가 그녀를 봐 왔다는 뜻.",glo:"He's recalling a habit he personally watched — meaning he used to watch her.",ok:true},
+        {ko:"지금 그녀에게 명령을 내리는 것.",glo:"He's giving her an order.",ok:false},
+        {ko:"앞으로 그럴 거라는 추측.",glo:"A guess about the future.",ok:false}],
+  ex:"-더라 reports a firsthand past observation. The ache of the line is buried in the grammar: to say 들더라 he had to have been watching her, back then."}
+];;
+
+const RANKS_P=[
+ {min:0,rank:"갤러리 인턴",blurb:"Gallery intern — back up the ladder, and re-read the snow scene."},
+ {min:3,rank:"주니어 갤러리스트",blurb:"Junior gallerist — your eye is waking up."},
+ {min:5,rank:"시니어 큐레이터 문세라",blurb:"Senior curator — ready to elbow someone in the ribs with the gossip."},
+ {min:6,rank:"디렉터 강이안",blurb:"Director Kang Ian — you read everything and pretend you didn't."}
+];
+const RANKS_E=[
+ {min:0,rank:"갤러리 인턴",blurb:"Gallery intern — back up the ladder, and re-read the loading-dock scene."},
+ {min:3,rank:"주니어 갤러리스트",blurb:"Junior gallerist — your eye is waking up."},
+ {min:5,rank:"시니어 큐레이터 문세라",blurb:"Senior curator — ready to elbow someone with the good gossip."},
+ {min:6,rank:"디렉터 강이안",blurb:"Director Kang Ian — you read everything and pretend you didn't."}
+];
+const CHAPTERS=[
+ {id:'prologue',kicker:'Prologue',title:'프롤로그',recap:'첫눈 내리던 밤, 그림 한 점을 건 약속, 그리고 아침이 오기 전에 사라진 남자.',VOCAB:VOCAB_P,GRAMMAR:GRAMMAR_P,BLOCKS:BLOCKS_P,QUIZ:QUIZ_P,RANKS:RANKS_P},
+ {id:'ep1',kicker:'Episode 1',title:'1화 · 오프닝 전야',recap:'7년 후, 작은 갤러리가 제국에 인수되던 아침 — 그리고 밤 열 시, 하역장에서.',VOCAB:VOCAB_E,GRAMMAR:GRAMMAR_E,BLOCKS:BLOCKS_E,QUIZ:QUIZ_E,RANKS:RANKS_E}
+];
+
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+let activeNote=null;
+function flash(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+function goToNote(nid){ const el=document.getElementById(nid); if(!el) return; el.scrollIntoView({behavior:'smooth',block:'center'}); flash(el); }
+function backToText(kwid){ const el=document.getElementById(kwid); if(!el) return; el.scrollIntoView({behavior:'smooth',block:'center'}); flash(el); }
+/* ── word bottom-sheet: definition in place, reading position never moves ── */
+const wsBg=document.getElementById('wsheet-bg'), wsEl=document.getElementById('wsheet'), wsBody=document.getElementById('ws-body');
+let wsCtx=null;
+function openSheet(ctx){ wsCtx=ctx; if(ctx.el) ctx.el.classList.add('seen');
+  if(ctx.isG){ const g=ctx.g;
+    wsBody.innerHTML='<div class="ws-head"><span class="ws-word">'+g.form+'</span><span class="ws-pos">grammar</span></div>'
+      +'<div class="ws-base">'+esc(g.title)+'</div><div class="ws-note">'+g.body+'</div>'
+      +'<div class="ws-ex"><div class="k">'+g.exK+'</div><div class="e">'+g.exE+'</div></div>';
+  } else { const v=ctx.v;
+    wsBody.innerHTML='<div class="ws-head"><span class="ws-word">'+esc(ctx.surface)+'</span><span class="ws-pos">'+v.pos+'</span></div>'
+      +(v.base!==ctx.surface?'<div class="ws-base">기본형 · base — '+esc(v.base)+'</div>':'')
+      +'<div class="ws-en">'+esc(v.en)+'</div>'+(v.note?'<div class="ws-note">'+esc(v.note)+'</div>':'');
+  }
+  wsBg.classList.add('open'); wsEl.classList.add('open'); document.body.style.overflow='hidden';
+}
+function closeSheet(){ wsBg.classList.remove('open'); wsEl.classList.remove('open'); document.body.style.overflow=''; }
+wsBg.addEventListener('click',closeSheet);
+document.getElementById('ws-close').addEventListener('click',closeSheet);
+document.getElementById('ws-notes').addEventListener('click',()=>{ if(!wsCtx) return; closeSheet(); goToNote(wsCtx.nid); activeNote=wsCtx.nid; });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); });
+function findSurface(BLOCKS,ref,v){ for(const b of BLOCKS) for(const s of b.ko) if(typeof s!=='string' && s.r===ref) return s.w; return (v||{}).base||ref; }
+function buildChapter(ch){
+  const VOCAB=ch.VOCAB,GRAMMAR=ch.GRAMMAR,BLOCKS=ch.BLOCKS,QUIZ=ch.QUIZ,RANKS=ch.RANKS;
+  const KEYSET=new Set(Object.keys(VOCAB).concat(Object.keys(GRAMMAR)));
+  const num={}; let ni=0; const orderRefs=[]; const seenId=new Set();
+  BLOCKS.forEach(b=>b.ko.forEach(s=>{ if(typeof s!=='string' && KEYSET.has(s.r) && !(s.r in num)){ num[s.r]=++ni; orderRefs.push(s.r); }}));
+  const sec=document.createElement('section'); sec.className='chapter'; sec.id='ch-'+ch.id;
+  const head=document.createElement('div'); head.className='ch-head';
+  head.innerHTML='<div class="ch-kicker">'+ch.kicker+'</div><div class="ch-title">'+ch.title+'</div><p class="ch-recap">'+ch.recap+'</p><div class="badges"><span class="badge">TOPIK 5\u20136</span><span class="badge"><span class="ic">\u25c6</span> '+ni+' notes</span></div>';
+  sec.appendChild(head);
+  const reader=document.createElement('div'); reader.className='reader';
+  BLOCKS.forEach(b=>{
+    const row=document.createElement('div'); row.className='row '+(b.t==='d'?'dlg':b.t==='h'?'head':'nar');
+    const ko=document.createElement('div'); ko.className='ko';
+    if(b.t==='d'){ const q=document.createElement('b'); q.className='q'; q.textContent='\u201c'; ko.appendChild(q); }
+    b.ko.forEach(s=>{
+      if(typeof s==='string'){ ko.appendChild(document.createTextNode(s)); return; }
+      if(!KEYSET.has(s.r)){ ko.appendChild(document.createTextNode(s.w)); return; }
+      const n=num[s.r]; const nid='note-'+ch.id+'-'+n; const kwid='kw-'+ch.id+'-'+n;
+      const a=document.createElement('a'); a.className='kw '+(s.r in GRAMMAR?'g':'v'); a.href='#'+nid;
+      if(!seenId.has(s.r)){ a.id=kwid; seenId.add(s.r); }
+      a.innerHTML=esc(s.w)+'<sup>'+n+'</sup>';
+      a.addEventListener('click',ev=>{ ev.preventDefault();
+        openSheet({ref:s.r, isG:(s.r in GRAMMAR), v:VOCAB[s.r], g:GRAMMAR[s.r], surface:s.w, n:n, nid:nid, el:a});
+      });
+      ko.appendChild(a);
+    });
+    if(b.t==='d'){ const q=document.createElement('b'); q.className='q'; q.textContent='\u201d'; ko.appendChild(q); }
+    const en=document.createElement('div'); en.className='en'; en.textContent=b.en;
+    row.appendChild(ko); row.appendChild(en); reader.appendChild(row);
+  });
+  sec.appendChild(reader);
+  const nsec=document.createElement('section'); nsec.className='sec';
+  nsec.innerHTML='<div class="sec-h"><h3>Notes</h3><span class="ko">단어 · 표현 · 문법</span></div>';
+  const nw=document.createElement('div');
+  orderRefs.forEach(ref=>{
+    const n=num[ref]; const isG=ref in GRAMMAR; const kwid='kw-'+ch.id+'-'+n;
+    const el=document.createElement('div'); el.className='note'+(isG?' g':''); el.id='note-'+ch.id+'-'+n;
+    if(isG){ const g=GRAMMAR[ref];
+      el.innerHTML='<div class="n-num">'+n+'</div><div><div class="n-head"><span class="n-word">'+g.form+'</span><span class="n-pos">grammar</span><span class="n-base">'+g.title+'</span></div><div class="n-note">'+g.body+'</div><div class="n-ex"><div class="k">'+g.exK+'</div><div class="e">'+g.exE+'</div></div></div>';
+    } else { const v=VOCAB[ref]; const surface=findSurface(BLOCKS,ref,v);
+      el.innerHTML='<div class="n-num">'+n+'</div><div><div class="n-head"><span class="n-word">'+surface+'</span>'+(v.base!==surface?'<span class="n-base">\u2192 '+v.base+'</span>':'')+'<span class="n-pos">'+v.pos+'</span></div><div class="n-en">'+esc(v.en)+'</div>'+(v.note?'<div class="n-note">'+esc(v.note)+'</div>':'')+'</div>';
+    }
+    const back=document.createElement('button'); back.className='n-back'; back.type='button'; back.textContent='\u21a9 \ubcf8\ubb38\uc73c\ub85c \u00b7 Back to text';
+    back.addEventListener('click',()=>{ backToText(kwid); activeNote=null; });
+    el.lastElementChild.appendChild(back);
+    nw.appendChild(el);
+  });
+  nsec.appendChild(nw); sec.appendChild(nsec);
+  const quiz=document.createElement('section'); quiz.className='quiz';
+  quiz.innerHTML='<div class="quiz-top"><div class="k">End-of-episode quiz</div><h3>Did you really read it?</h3><p>여섯 문제.</p></div>';
+  const qwrap=document.createElement('div'); let answered=0, score=0;
+  QUIZ.forEach(item=>{
+    const q=document.createElement('div'); q.className='q';
+    q.innerHTML='<div class="q-tag">'+item.tag+'</div><div class="q-text">'+item.q+'</div><div class="q-sub">'+item.sub+'</div>';
+    const opts=document.createElement('div');
+    const expl=document.createElement('div'); expl.className='expl'; expl.innerHTML='<b>왜?</b> '+item.ex;
+    item.opts.forEach((o,oi)=>{
+      const btn=document.createElement('button'); btn.className='opt'; btn.type='button';
+      btn.innerHTML='<span class="mk"></span><span class="ko">'+o.ko+'</span><span class="glo">'+o.glo+'</span>';
+      btn.addEventListener('click',()=>{
+        if(q.dataset.done) return; q.dataset.done='1'; answered++;
+        opts.querySelectorAll('.opt').forEach((b,bi)=>{ b.disabled=true;
+          if(item.opts[bi].ok){ b.classList.add('correct'); b.querySelector('.mk').textContent='\u2713'; }
+          else if(bi===oi){ b.classList.add('wrong'); b.querySelector('.mk').textContent='\u2715'; }});
+        if(o.ok) score++; expl.classList.add('show');
+        if(answered===QUIZ.length) finish();
+      });
+      opts.appendChild(btn);
+    });
+    q.appendChild(opts); q.appendChild(expl); qwrap.appendChild(q);
+  });
+  quiz.appendChild(qwrap);
+  const result=document.createElement('div'); result.className='result';
+  result.innerHTML='<div class="score"></div><div class="rank"></div><div class="blurb"></div><button type="button">다시 풀기 · Try again</button>';
+  quiz.appendChild(result);
+  function finish(){ const r=[...RANKS].reverse().find(x=>score>=x.min);
+    result.querySelector('.score').textContent=score+' / '+QUIZ.length;
+    result.querySelector('.rank').textContent=r.rank;
+    result.querySelector('.blurb').textContent=r.blurb;
+    result.classList.add('show'); result.scrollIntoView({behavior:'smooth',block:'center'}); }
+  result.querySelector('button').addEventListener('click',()=>{
+    answered=0; score=0; result.classList.remove('show');
+    qwrap.querySelectorAll('.q').forEach(q=>{ delete q.dataset.done;
+      q.querySelectorAll('.opt').forEach(b=>{ b.disabled=false; b.classList.remove('correct','wrong'); b.querySelector('.mk').textContent=''; });
+      q.querySelector('.expl').classList.remove('show'); });
+    quiz.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  sec.appendChild(quiz);
+  return sec;
+}
+const mount=document.getElementById('chapters');
+CHAPTERS.forEach((ch,i)=>{ if(i>0){ const d=document.createElement('hr'); d.className='chapdiv'; mount.appendChild(d);} mount.appendChild(buildChapter(ch)); });
+document.getElementById('en-seg').addEventListener('click',e=>{ const btn=e.target.closest('button'); if(!btn) return;
+  document.body.dataset.en=btn.dataset.en; [...e.currentTarget.children].forEach(b=>b.setAttribute('aria-pressed',String(b===btn))); });
+document.getElementById('t-theme').addEventListener('click',()=>{ const day=document.documentElement.getAttribute('data-theme')==='day';
+  document.documentElement.setAttribute('data-theme',day?'night':'day'); });
+document.querySelectorAll('[data-jump]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault();
+  const t=document.querySelector(a.getAttribute('data-jump')); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }));
+document.body.dataset.en='dim';
+
+</script>
