@@ -65,19 +65,26 @@ window.OL = (() => {
     const j = await getJSON(`${BASE}/search.json?${p}`);
     return (j.docs || []).map(mapDoc);
   }
-  /** 제목+저자로 가장 그럴듯한 1건 (대출 목록 보강용) */
+  /** 제목+저자로 가장 그럴듯한 1건 (대출 목록 보강용). 부제·말줄임 제거 후 단계적으로 느슨하게 재시도 */
   async function lookup(title, author) {
-    const p = new URLSearchParams({ title, limit: '5', fields: FIELDS });
-    if (author) p.set('author', author);
-    let j = await getJSON(`${BASE}/search.json?${p}`);
-    let docs = (j.docs || []).map(mapDoc);
-    if (!docs.length && author) {
-      // 저자 표기가 달라 못 찾으면 제목만으로 재시도
-      const p2 = new URLSearchParams({ title, limit: '5', fields: FIELDS });
-      j = await getJSON(`${BASE}/search.json?${p2}`);
-      docs = (j.docs || []).map(mapDoc);
+    const main = String(title || '').replace(/\s*(\.{3}|…)\s*$/, '').split(/\s[:=]\s/)[0].replace(/[.:]\s*$/, '').trim();
+    if (!main) return null;
+    const surname = author ? String(author).split(/[,/]/)[0].trim() : '';
+    const attempts = [];
+    if (surname) attempts.push({ title: main, author: surname });
+    attempts.push({ title: main });
+    attempts.push({ q: surname ? `${main} ${surname}` : main });
+    for (const a of attempts) {
+      const p = new URLSearchParams({ limit: '5', fields: FIELDS });
+      for (const [k, v] of Object.entries(a)) p.set(k, v);
+      try {
+        const j = await getJSON(`${BASE}/search.json?${p}`);
+        const docs = (j.docs || []).map(mapDoc);
+        const hit = docs.find(d => d.pages) || docs[0];
+        if (hit) return hit;
+      } catch (_) { /* 다음 시도 */ }
     }
-    return docs.find(d => d.pages) || docs[0] || null;
+    return null;
   }
   async function byAuthor(author, limit = 10) {
     const p = new URLSearchParams({ author, limit: String(limit), fields: FIELDS, sort: 'rating' });
@@ -117,7 +124,11 @@ window.GB = (() => {
     try { sessionStorage.setItem(k, JSON.stringify({ t: Date.now(), v })); } catch (_) { /* quota */ }
     return v;
   }
-  function mainTitle(title) { return String(title || '').split(/\s[:=]\s/)[0].replace(/\.\s*$/, '').trim(); }
+  function mainTitle(title) {
+    let t = String(title || '').replace(/\s*(\.{3}|…)\s*$/, '').trim();
+    if (t.includes(' / ')) t = t.split(' / ')[0].trim();
+    return t.split(/\s[:=]\s/)[0].replace(/[.:]\s*$/, '').trim();
+  }
   function mapVol(v) {
     const i = v.volumeInfo || {};
     const img = (i.imageLinks && (i.imageLinks.thumbnail || i.imageLinks.smallThumbnail)) || '';
@@ -131,7 +142,10 @@ window.GB = (() => {
   async function lookup(title, author) {
     const mt = mainTitle(title);
     if (!mt) return null;
-    const tries = [`intitle:"${mt}"` + (author ? ` inauthor:"${String(author).split(',')[0].trim()}"` : ''), `intitle:"${mt}"`, mt];
+    const surname = author ? String(author).split(/[,/]/)[0].trim() : '';
+    const tries = [];
+    if (surname) tries.push(`intitle:"${mt}" inauthor:"${surname}"`);
+    tries.push(`intitle:"${mt}"`, mt + (surname ? ' ' + surname : ''));
     for (const q of tries) {
       try {
         const j = await getJSON(`${BASE}?q=${encodeURIComponent(q)}&maxResults=5&printType=books`);

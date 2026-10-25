@@ -55,8 +55,8 @@
       let status, perDay = 0;
       if (pages && remaining === 0) status = 'done';
       else if (!due) status = 'nodue';
+      else if (daysLeft <= 0) status = 'overdue'; // 연체: 쪽수를 몰라도 '반납할 책'으로 (일정에 넣지 않고 반납/연장 제안)
       else if (!pages) status = 'nopages';
-      else if (daysLeft <= 0) status = 'overdue'; // 연체: 일정에 넣지 않고 반납/연장을 제안 (연장하면 새 반납일로 다시 계산)
       else {
         perDay = Math.ceil(remaining / daysLeft);
         status = perDay > capacity ? 'tight' : 'ok';
@@ -100,10 +100,12 @@
       else if (it.status === 'nodue') suggestions.push({ type: 'set_due', bookId: it.id });
     }
     if (overCapacity) {
-      // 가장 반납일이 먼 책을 연장/보류 후보로
+      // 연장 가능한 책 중 반납일이 가장 먼 책을 연장 후보로 (연장 불가뿐이면 '마지막에 읽기' 제안)
       const scheduled = items.filter(it => it.status === 'ok' || it.status === 'tight');
-      const farthest = scheduled.slice().sort((a, b) => (b.due || '').localeCompare(a.due || ''))[0];
-      suggestions.unshift({ type: 'over_capacity', bookId: farthest ? farthest.id : null, totalToday, capacity });
+      const renewables = scheduled.filter(it => it.book && it.book.renewable !== false);
+      const pool = renewables.length ? renewables : scheduled;
+      const farthest = pool.slice().sort((a, b) => (b.due || '').localeCompare(a.due || ''))[0];
+      suggestions.unshift({ type: 'over_capacity', bookId: farthest ? farthest.id : null, renewable: renewables.length > 0, totalToday, capacity });
     }
 
     return { today, capacity, bufferDays: buffer, items, calendar, totalToday, overCapacity, suggestions };

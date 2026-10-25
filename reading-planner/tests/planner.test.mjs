@@ -60,12 +60,13 @@ test('페이지 수/반납일 없음, 완독 상태', () => {
     book({ id: 'b', due: null }),
     book({ id: 'c', currentPage: 300 }),
     book({ id: 'd', status: 'done' }),
-    book({ id: 'e', status: 'queued' })
+    book({ id: 'e', status: 'queued' }),
+    book({ id: 'f', pages: 0, due: '2026-10-01' })   // 쪽수 없음 + 연체 → 연체가 우선
   ], { today: TODAY });
   const by = Object.fromEntries(plan.items.map(i => [i.id, i.status]));
-  assert.deepEqual(by, { a: 'nopages', b: 'nodue', c: 'done' });
+  assert.deepEqual(by, { a: 'nopages', b: 'nodue', c: 'done', f: 'overdue' });
   const types = plan.suggestions.map(s => s.type + ':' + s.bookId).sort();
-  assert.deepEqual(types, ['mark_done:c', 'set_due:b', 'set_pages:a']);
+  assert.deepEqual(types, ['mark_done:c', 'overdue:f', 'set_due:b', 'set_pages:a']);
   assert.equal(plan.totalToday, 0);
 });
 
@@ -78,7 +79,23 @@ test('하루 용량 초과 시 가장 먼 반납일 책을 연장 후보로 제�
   assert.equal(plan.overCapacity, true);
   assert.equal(plan.suggestions[0].type, 'over_capacity');
   assert.equal(plan.suggestions[0].bookId, 'y');
+  assert.equal(plan.suggestions[0].renewable, true);
   assert.deepEqual(plan.items.map(i => i.id), ['x', 'y'], '반납일 빠른 순 정렬');
+});
+
+test('용량 초과: 연장 불가 책은 건너뛰고 연장 가능한 책을 제안', () => {
+  const plan = Pl.buildPlan([
+    book({ id: 'x', pages: 400, currentPage: 0, due: '2026-11-04', renewable: true }),
+    book({ id: 'y', pages: 500, currentPage: 0, due: '2026-11-14', renewable: false })
+  ], { today: TODAY, capacity: 60 });
+  assert.equal(plan.suggestions[0].bookId, 'x');
+  assert.equal(plan.suggestions[0].renewable, true);
+  const none = Pl.buildPlan([
+    book({ id: 'x', pages: 400, currentPage: 0, due: '2026-11-04', renewable: false }),
+    book({ id: 'y', pages: 500, currentPage: 0, due: '2026-11-14', renewable: false })
+  ], { today: TODAY, capacity: 60 });
+  assert.equal(none.suggestions[0].bookId, 'y');
+  assert.equal(none.suggestions[0].renewable, false);
 });
 
 test('ICS: 읽기 일정 + 반납일 이벤트', () => {

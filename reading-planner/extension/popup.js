@@ -77,5 +77,18 @@ $('#sync').addEventListener('click', async () => {
   }
 });
 
+$('#test-lookup').addEventListener('click', async () => {
+  const title = $('#test-title').value.trim();
+  const out = $('#test-result');
+  if (!title) return;
+  out.hidden = false; out.textContent = 'Looking up…';
+  try {
+    const res = await chrome.runtime.sendMessage({ type: 'LRP_LOOKUP', title, author: '' });
+    out.textContent = res && res.result ? JSON.stringify(res.result, null, 1) : 'Not found (null) — Kyobo returned no usable result for this title.';
+  } catch (e) {
+    out.textContent = 'Error: ' + (e && e.message ? e.message : e);
+  }
+});
+
 chrome.storage.onChanged.addListener(refresh);
 refresh();

@@ -1,7 +1,7 @@
 /* =============================================================
    Library Reading Planner — 앱 로직
    - 데이터: localStorage (이 브라우저에만 저장)
-   - 책 정보: Open Library 공개 API
+   - 책 정보: Open Library + Google Books 공개 API
    - 도서관 계정 동기화: 크롬 확장(window.postMessage 브리지) 또는 붙여넣기
    ============================================================= */
 'use strict';
@@ -14,6 +14,9 @@ const EXT_GUIDE_URL = 'https://github.com/icallingyou/Korean-App/blob/claude/kor
 const EXT_ZIP_URL = 'https://icallingyou.github.io/Korean-App/reading-planner/extension.zip'; // 배포 시 워크플로가 생성
 const SYNC_MSG = 'LRP_SYNC';          // 확장 → 페이지
 const SYNC_REQ = 'LRP_SYNC_REQUEST';  // 페이지 → 확장
+const ENRICH_VER = 3;                 // 조회 로직이 바뀌면 올려서 실패했던 책도 다시 찾게 함
+const ENRICH_TTL = 24 * 3600 * 1000;
+const CJK_RE = /[ㄱ-힝一-鿿぀-ヿ]/;
 const GENERIC_SUBJECT = /^(fiction|accessible book|protected daisy|in library|large type books|long now manual for civilization|open library staff picks|new york times bestseller|reading level[- ]grade.*|juvenile fiction|general|literature|english|novels?|ficci[oó]n|romans?|nouvelles|lending library|overdrive|internet archive wishlist|popular print disabled books|translations? into .*|history and criticism|adult|nyt:.*|award:.*|collectionid:.*|children's fiction|fiction, general|fiction, .*|literary|literary fiction)$/i;
 
 // ---------------------------------------------------------------
@@ -41,7 +44,12 @@ function load() {
 }
 function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (_) { /* quota */ } }
 
-const ui = { view: 'today', shelfFilter: 'reading', calSel: null, q: '', searchResults: null, searching: false, recsLoading: false, recsError: false, extConnected: false };
+const ui = {
+  view: 'today', shelfFilter: 'reading', calSel: null, q: '', searchResults: null, searching: false,
+  recsLoading: false, recsError: false, extConnected: false, extCaps: {},
+  enrich: { running: false, done: 0, total: 0 }
+};
+const pendingLookups = new Map(); // 확장에 보낸 책 조회 요청 (id → resolve)
 
 // ---------------------------------------------------------------
 // i18n / 헬퍼
@@ -95,7 +103,7 @@ function toast(msg) {
   const el = $('#toast');
   el.textContent = msg; el.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.hidden = true; }, 2200);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 2600);
 }
 function download(name, text, type) {
   const blob = new Blob([text], { type: type || 'text/plain;charset=utf-8' });
@@ -115,7 +123,6 @@ function plan() { return Planner.buildPlan(state.books, { bufferDays: state.sett
 const bookById = id => state.books.find(b => b.id === id);
 
 const ICON = {
-  speaker: '',
   search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   ext: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-8 8M11 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
@@ -148,87 +155,184 @@ function setProgress(b, page) {
   if (pages && p >= pages) { b.status = 'done'; b.finishedAt = today(); }
   save();
 }
-function markDone(b) { b.status = 'done'; if (b.pages) b.currentPage = b.pages; b.finishedAt = today(); save(); }
+function markDone(b) { b.status = 'done'; if (b.pages) b.currentPage = b.pages; b.finishedAt = today(); b.returnedUnfinished = false; save(); }
+/** 반납 처리: 다 읽지 못했어도 일정에서 빠지고 책장에는 '반납' 표시 */
+function markReturned(b) {
+  b.status = 'done';
+  b.returnedAt = today();
+  b.returnedUnfinished = !(b.pages && (b.currentPage || 0) >= b.pages);
+  if (!b.finishedAt) b.finishedAt = today();
+  save();
+}
+function setPages(b, n) {
+  const pages = Math.max(1, Math.min(5000, Math.round(Number(n) || 0)));
+  if (!pages) return false;
+  b.pages = pages; b.pagesNotFound = false;
+  if ((b.currentPage || 0) > pages) b.currentPage = pages;
+  save();
+  return true;
+}
 
-/** Open Library(1차) → Google Books(2차)에서 페이지 수·표지·주제 보강 */
+/** 확장 프로그램을 통한 조회 (교보문고 등 — 웹페이지는 CORS 때문에 직접 조회 불가) */
+function extLookup(b) {
+  if (!ui.extConnected || !ui.extCaps.lookup) return Promise.resolve(null);
+  return new Promise(resolve => {
+    const id = uid();
+    const timer = setTimeout(() => { pendingLookups.delete(id); resolve(null); }, 12000);
+    pendingLookups.set(id, r => { clearTimeout(timer); resolve(r); });
+    window.postMessage({ type: 'LRP_LOOKUP', id, title: b.title, author: b.author || '' }, '*');
+  });
+}
+
+/** 페이지 수·표지·주제 보강. 한국어 제목: 교보문고(확장) → Google Books → Open Library, 그 외: Open Library → Google Books */
 async function enrich(b) {
   if (!navigator.onLine) return false;
   let changed = false;
-  const apply = (hit, withKey) => {
+  const apply = (hit, src) => {
     if (!hit) return;
-    if (!b.pages && hit.pages) { b.pages = hit.pages; changed = true; }
+    if (!b.pages && hit.pages) { b.pages = hit.pages; b.pagesSource = src; changed = true; }
     if (!b.coverUrl && hit.coverUrl) { b.coverUrl = hit.coverUrl; changed = true; }
-    if (withKey && !b.olKey && hit.olKey) { b.olKey = hit.olKey; changed = true; }
+    if (src === 'ol' && !b.olKey && hit.olKey) { b.olKey = hit.olKey; changed = true; }
+    if (src === 'kyobo' && hit.url && !b.kyoboUrl) { b.kyoboUrl = hit.url; changed = true; }
     if (!(b.subjects || []).length && (hit.subjects || []).length) { b.subjects = hit.subjects; changed = true; }
     if (!b.author && hit.author) { b.author = hit.author; changed = true; }
   };
-  try { apply(await OL.lookup(b.title, b.author), true); } catch (_) { /* 다음 조회원 */ }
-  if ((!b.pages || !b.coverUrl) && window.GB) {
-    try { apply(await GB.lookup(b.title, b.author), false); } catch (_) { /* 무시 */ }
+  const order = CJK_RE.test(b.title) ? ['kyobo', 'gb', 'ol'] : ['ol', 'gb'];
+  for (const src of order) {
+    if (b.pages && b.coverUrl) break;
+    try {
+      if (src === 'kyobo') apply(await extLookup(b), 'kyobo');
+      else if (src === 'ol') apply(await OL.lookup(b.title, b.author), 'ol');
+      else if (window.GB) apply(await GB.lookup(b.title, b.author), 'gb');
+    } catch (_) { /* 다음 조회원 */ }
   }
   if (changed) save();
   return changed;
 }
 let enriching = false;
-async function enrichMissing() {
-  if (enriching) return;
+function needsEnrich(b, force, now) {
+  if (!(b.status === 'reading' || b.status === 'queued')) return false;
+  if (b.pages && b.coverUrl) return false;
+  if (force) return true;
+  return b.enrichVer !== ENRICH_VER || !b.enrichedAt || (now - b.enrichedAt) > ENRICH_TTL;
+}
+async function enrichMissing(force) {
+  if (enriching || !navigator.onLine) return;
+  const now = Date.now();
+  const todo = state.books.filter(b => needsEnrich(b, force, now));
+  if (!todo.length) return;
   enriching = true;
+  ui.enrich = { running: true, done: 0, total: todo.length };
+  render();
+  let found = 0;
   try {
-    const todo = state.books.filter(b => !b.enrichedAt && (!b.pages || !b.coverUrl || !(b.subjects || []).length));
     for (const b of todo) {
-      const changed = await enrich(b);
-      b.enrichedAt = Date.now(); save();
-      if (changed) render();
+      const had = !!b.pages;
+      try { await enrich(b); } catch (_) { /* ignore */ }
+      b.enrichedAt = Date.now(); b.enrichVer = ENRICH_VER; b.pagesNotFound = !b.pages;
+      if (!had && b.pages) found++;
+      save();
+      ui.enrich.done++;
+      patchEnrichUI(b);
     }
-  } finally { enriching = false; }
+  } finally {
+    enriching = false;
+    ui.enrich.running = false;
+    render();
+    if (found) toast(t('toast_pages_found', { n: found }));
+  }
+}
+function patchEnrichUI(b) {
+  const prog = $('#enrich-progress');
+  if (prog) prog.textContent = t('finding_pages', { done: ui.enrich.done, total: ui.enrich.total });
+  const st = document.querySelector(`.book-mini[data-id="${b.id}"] .mini-state`);
+  if (st) { st.textContent = b.pages ? '✓ ' + t('row_pages', { n: b.pages }) : t('pages_not_found'); st.classList.toggle('warn', !b.pages); }
 }
 
 // ---------------------------------------------------------------
 // 도서관 동기화 / 가져오기
 // ---------------------------------------------------------------
+/** 동기화 항목과 책장의 책 매칭: 정확히 같은 제목 → (잘린 제목이거나 저자가 같을 때만) 접두 일치 */
+function findBookForItem(it) {
+  const key = norm(it.title);
+  let ex = state.books.find(b => norm(b.title) === key);
+  if (ex) return ex;
+  const truncated = s => /\.{3}|…/.test(String(s || ''));
+  const sameAuthor = (a, b) => a && b && norm(a) === norm(b);
+  return state.books.find(b => titleMatch(b.title, it.title) && (truncated(b.title) || truncated(it.title) || sameAuthor(b.author, it.author))) || null;
+}
 function mergeItems(items, source) {
   let added = 0, updated = 0;
+  const matched = new Set();
   for (const it of items || []) {
     if (!it || !it.title) continue;
-    const ex = state.books.find(b => titleMatch(b.title, it.title));
+    const ex = findBookForItem(it);
     const flags = {};
     if (typeof it.renewable === 'boolean') flags.renewable = it.renewable;
     if (it.status) flags.libStatus = it.status;
     if (ex) {
+      matched.add(ex.id);
       let ch = false;
       if (it.due && ex.due !== it.due) { ex.due = it.due; ch = true; }
       if (ex.status === 'queued') { ex.status = 'reading'; ch = true; }
+      if (ex.status === 'done' && ex.returnedUnfinished && it.due && it.due >= today()) { ex.status = 'reading'; ex.returnedUnfinished = false; ch = true; } // 다시 빌린 책
       if (!ex.author && it.author) { ex.author = it.author; ch = true; }
-      // 잘린 제목("... ")보다 긴 제목이 오면 교체
-      if (it.title.length > ex.title.length && /\.{3}|…/.test(ex.title)) { ex.title = it.title; ch = true; }
+      // 잘린 제목("…")보다 긴 제목이 오면 교체하고, 새 제목으로 쪽수를 다시 찾게 함
+      if (it.title.length > ex.title.length && /\.{3}|…/.test(ex.title)) { ex.title = it.title; ex.enrichedAt = 0; ch = true; }
       if (source === 'library') ex.source = 'library';
       for (const [k, v] of Object.entries(flags)) if (ex[k] !== v) { ex[k] = v; ch = true; }
       if (ch) updated++;
     } else {
-      addBook(Object.assign({ title: it.title, author: it.author || '', due: it.due || null, status: 'reading', source }, flags));
+      const b = addBook(Object.assign({ title: it.title, author: it.author || '', due: it.due || null, status: 'reading', source }, flags));
+      matched.add(b.id);
       added++;
     }
   }
   save();
-  return { added, updated };
+  return { added, updated, matched };
 }
 function applySync(payload) {
   if (!payload || typeof payload !== 'object') return;
   let items = Array.isArray(payload.items) ? payload.items : [];
-  // 확장이 페이지 원문을 함께 보내면 항상 최신 파서(웹앱 쪽)로 다시 분석
+  // 확장이 페이지 원문을 함께 보내면 항상 최신 파서(웹앱 쪽)로 다시 분석 — 기준 날짜는 캡처 시점
   if (typeof payload.pageText === 'string' && payload.pageText.length > 20 && window.CheckoutParser) {
-    try { const re = CheckoutParser.parseCheckoutsFromText(payload.pageText); if (re.length) items = re; } catch (_) { /* 원래 items 사용 */ }
+    try {
+      const capturedAt = Number(payload.syncedAt) ? new Date(Number(payload.syncedAt)) : new Date();
+      const re = CheckoutParser.parseCheckoutsFromText(payload.pageText, { now: capturedAt });
+      if (re.length) items = re;
+    } catch (_) { /* 원래 items 사용 */ }
   }
   const r = mergeItems(items, 'library');
+  // 도서관 계정 '대출 중' 목록(확장 동기화)에 더 이상 없는 책은 반납된 것으로 처리
+  let autoReturned = 0;
+  const fromCheckoutsPage = !!payload.sourceUrl && payload.sourceUrl !== 'paste' && window.CheckoutParser && CheckoutParser.looksLikeCheckoutsUrl(payload.sourceUrl);
+  if (items.length && fromCheckoutsPage) {
+    for (const b of state.books) {
+      if (b.source === 'library' && b.status === 'reading' && !r.matched.has(b.id)) { markReturned(b); autoReturned++; }
+    }
+  }
   if (typeof payload.searchTemplate === 'string' && payload.searchTemplate.includes('{q}')) state.settings.qplSearchUrlAuto = payload.searchTemplate;
   if (items.length) state.sync = { at: Number(payload.syncedAt) || Date.now(), count: items.length, sourceUrl: String(payload.sourceUrl || '') };
   save();
   render();
-  if (r.added || r.updated) { toast(t('toast_synced', { n: items.length })); enrichMissing(); }
+  if (r.added || r.updated) toast(t('toast_synced', { n: items.length }) + (autoReturned ? ' · ' + t('auto_returned', { n: autoReturned }) : ''));
+  else if (autoReturned) toast(t('auto_returned', { n: autoReturned }));
+  enrichMissing();
 }
 window.addEventListener('message', e => {
   if (e.source !== window || !e.data) return;
-  if (e.data.type === 'LRP_HELLO') { if (!ui.extConnected) { ui.extConnected = true; render(); } return; }
+  if (e.data.type === 'LRP_HELLO') {
+    const caps = Object.fromEntries((Array.isArray(e.data.caps) ? e.data.caps : []).map(c => [c, true]));
+    const changed = !ui.extConnected || JSON.stringify(caps) !== JSON.stringify(ui.extCaps);
+    ui.extConnected = true; ui.extCaps = caps;
+    if (changed) render();
+    return;
+  }
+  if (e.data.type === 'LRP_LOOKUP_RESULT') {
+    const cb = pendingLookups.get(e.data.id);
+    if (cb) { pendingLookups.delete(e.data.id); cb(e.data.result || null); }
+    return;
+  }
   if (e.data.type !== SYNC_MSG) return;
   ui.extConnected = true;
   applySync(e.data.payload);
@@ -271,22 +375,6 @@ function statusBadge(st) {
   const cls = { ok: 'ok', tight: 'tight', overdue: 'overdue', done: 'done', nodue: '', nopages: '' }[st] || '';
   return `<span class="badge ${cls}">${esc(t('st_' + st))}</span>`;
 }
-function suggestionHtml(s) {
-  const b = s.bookId ? bookById(s.bookId) : null;
-  const title = b ? b.title : '';
-  const map = {
-    over_capacity: ['', t('sug_over_capacity', { total: s.totalToday, cap: s.capacity, title })],
-    overdue: ['danger', t('sug_overdue', { title })],
-    set_pages: ['info', t('sug_set_pages', { title })],
-    set_due: ['info', t('sug_set_due', { title })],
-    mark_done: ['info', t('sug_mark_done', { title })]
-  };
-  const [cls, text] = map[s.type] || ['', ''];
-  if (!text) return '';
-  const action = (s.type === 'set_pages' || s.type === 'set_due') && b ? `<button class="link-btn" data-edit="${b.id}">${esc(t('btn_edit'))}</button>` :
-    s.type === 'mark_done' && b ? `<button class="link-btn" data-finish="${b.id}">${esc(t('btn_finish'))}</button>` : '';
-  return `<div class="sug ${cls}"><span>${esc(text)}</span>${action}</div>`;
-}
 function libBadges(b) {
   const out = [];
   if (b.libStatus && /lost|billed/i.test(b.libStatus)) out.push(`<span class="badge overdue">${esc(t('badge_lost'))}</span>`);
@@ -294,15 +382,27 @@ function libBadges(b) {
   else if (b.renewable === false) out.push(`<span class="badge tight">${esc(t('badge_not_renewable'))}</span>`);
   return out.join('');
 }
+function suggestionHtml(s) {
+  const b = s.bookId ? bookById(s.bookId) : null;
+  const title = b ? b.title : '';
+  let cls = '', text = '', action = '';
+  if (s.type === 'over_capacity') {
+    text = s.renewable === false
+      ? t('sug_over_capacity_norenew', { total: s.totalToday, cap: s.capacity, title })
+      : t('sug_over_capacity', { total: s.totalToday, cap: s.capacity, title });
+    if (b && s.renewable !== false) action = `<button class="link-btn" data-edit="${b.id}">${esc(t('btn_renewed'))}</button>`;
+  } else if (s.type === 'mark_done') {
+    cls = 'info'; text = t('sug_mark_done', { title });
+    if (b) action = `<button class="link-btn" data-finish="${b.id}">${esc(t('btn_finish'))}</button>`;
+  } else return '';
+  return `<div class="sug ${cls}"><span>${esc(text)}</span>${action}</div>`;
+}
 function taskCard(it) {
   const b = it.book;
   const scheduled = it.status === 'ok' || it.status === 'tight';
-  let goal;
+  let goal = '';
   if (scheduled && it.perDay > 0) goal = `<p class="goal">${esc(t('read_pages', { from: it.currentPage + 1, to: it.currentPage + it.perDay, n: it.perDay }))}</p>`;
-  else if (it.status === 'nopages') goal = `<p class="goal soft">${esc(t('no_pages'))}</p>`;
-  else if (it.status === 'nodue') goal = `<p class="goal soft">${esc(t('no_due'))}</p>`;
   else if (it.status === 'done') goal = `<p class="goal">${esc(t('st_done'))} 🎉</p>`;
-  else goal = '';
   const prog = it.pages ? `
     <div class="prog-line">
       <div class="pbar"><i style="width:${it.progressPct}%"></i></div>
@@ -325,6 +425,17 @@ function taskCard(it) {
         </div>
       </div>
     </article>`;
+}
+function miniRow(b, meta, actions) {
+  return `
+    <div class="mini-row book-mini" data-id="${b.id}">
+      ${coverHtml(b, 'sm')}
+      <div class="mini-main">
+        <div class="mini-title">${esc(b.title)}</div>
+        <div class="mini-meta"><span>${esc(b.author || t('unknown_author'))}</span>${meta}</div>
+      </div>
+      <div class="mini-actions">${actions}</div>
+    </div>`;
 }
 function calendarHtml(p) {
   const wd = t('weekdays');
@@ -376,6 +487,44 @@ function renderToday() {
   const [y, m, d] = p.today.split('-').map(Number);
   const dateLabel = new Intl.DateTimeFormat(lang() === 'ko' ? 'ko-KR' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date(y, m - 1, d));
 
+  const scheduled = p.items.filter(it => it.status === 'ok' || it.status === 'tight' || it.status === 'done');
+  const overdue = p.items.filter(it => it.status === 'overdue');
+  const nopages = p.items.filter(it => it.status === 'nopages');
+  const nodue = p.items.filter(it => it.status === 'nodue');
+  const banners = p.suggestions.filter(s => s.type === 'over_capacity' || s.type === 'mark_done');
+  const en = ui.enrich;
+
+  const returnHtml = overdue.length ? `
+    <div class="section-head"><h2>📚 ${esc(t('section_return'))} <span class="count">${overdue.length}</span></h2></div>
+    <p class="section-hint">${esc(t('return_hint'))}</p>
+    <div class="mini-list return-list">
+      ${overdue.map(it => miniRow(it.book,
+        `<span class="overdue-text">${esc(dueText(it))}</span>${libBadges(it.book)}`,
+        `<button class="btn small primary" data-act="returned" data-id="${it.id}">${ICON.check} ${esc(t('btn_returned'))}</button>
+         <button class="btn small" data-act="edit" data-id="${it.id}">${esc(t('btn_renewed'))}</button>`)).join('')}
+    </div>` : '';
+
+  const pagesHtml = nopages.length ? `
+    <div class="section-head">
+      <h2>${esc(t('section_pages'))} <span class="count">${nopages.length}</span></h2>
+      ${en.running
+        ? `<span class="small muted" id="enrich-progress">${esc(t('finding_pages', { done: en.done, total: en.total }))}</span>`
+        : `<button class="btn small" id="btn-find-pages">${ICON.refresh} ${esc(t('btn_find_pages'))}</button>`}
+    </div>
+    <p class="section-hint">${esc(t('pages_hint'))}</p>
+    <div class="mini-list needs-pages">
+      ${nopages.map(it => miniRow(it.book,
+        `<span>${esc(dueText(it))}</span>${libBadges(it.book)}<span class="mini-state small ${!en.running && it.book.pagesNotFound ? 'warn' : 'muted'}">${en.running ? esc(t('finding')) : it.book.pagesNotFound ? esc(t('pages_not_found')) : ''}</span>`,
+        `${CJK_RE.test(it.book.title) ? `<a class="btn small ghost" href="https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(it.book.title.split(/\s[:=]\s/)[0])}" target="_blank" rel="noopener">${esc(t('btn_kyobo'))}</a>` : ''}
+         <form class="inline-pages" data-id="${it.id}"><input type="number" min="1" max="5000" placeholder="${esc(t('pages_ph'))}" aria-label="${esc(t('f_pages'))}" required><button class="btn small primary" type="submit">${esc(t('save'))}</button></form>`)).join('')}
+    </div>` : '';
+
+  const nodueHtml = nodue.length ? `
+    <div class="section-head"><h2>${esc(t('section_nodue'))} <span class="count">${nodue.length}</span></h2></div>
+    <div class="mini-list">
+      ${nodue.map(it => miniRow(it.book, '', `<button class="btn small" data-act="edit" data-id="${it.id}">${esc(t('btn_set_due'))}</button>`)).join('')}
+    </div>` : '';
+
   el.innerHTML = `
     <div class="card hero">
       <div class="hero-top">
@@ -394,10 +543,16 @@ function renderToday() {
         <span class="small ${ui.extConnected ? 'ext-on' : 'muted'}">${ui.extConnected ? '🧩 ' + esc(t('ext_connected')) : esc(t('ext_not_detected'))}</span>
         <button class="link-btn" data-act="import">${esc(t('sync_how'))}</button>
       </div>
-      ${p.suggestions.length ? `<div class="suggestions">${p.suggestions.map(suggestionHtml).join('')}</div>` : ''}
+      ${banners.length ? `<div class="suggestions">${banners.map(suggestionHtml).join('')}</div>` : ''}
     </div>
 
-    <div class="tasks">${p.items.map(taskCard).join('')}</div>
+    ${returnHtml}
+
+    <div class="section-head"><h2>${esc(t('section_plan'))} <span class="count">${scheduled.length}</span></h2></div>
+    ${scheduled.length ? `<div class="tasks">${scheduled.map(taskCard).join('')}</div>` : `<div class="empty compact">${esc(nopages.length ? t('plan_waiting_pages') : t('nothing_today'))}</div>`}
+
+    ${pagesHtml}
+    ${nodueHtml}
 
     <div class="section-head">
       <h2>${esc(t('cal_title'))}</h2>
@@ -419,6 +574,17 @@ function renderToday() {
     if (v === null || v.trim() === '' || isNaN(+v)) return;
     setProgress(b, +v); toast(t('toast_saved')); render();
   }));
+  el.querySelectorAll('[data-act="returned"]').forEach(btn => btn.addEventListener('click', () => {
+    const b = bookById(btn.dataset.id); if (!b) return;
+    markReturned(b); toast(t('toast_returned')); render();
+  }));
+  el.querySelectorAll('form.inline-pages').forEach(f => f.addEventListener('submit', e => {
+    e.preventDefault();
+    const b = bookById(f.dataset.id); if (!b) return;
+    if (setPages(b, f.querySelector('input').value)) { toast(t('toast_saved')); render(); }
+  }));
+  const find = $('#btn-find-pages');
+  if (find) find.addEventListener('click', () => enrichMissing(true));
   el.querySelector('[data-act="ics"]').addEventListener('click', () => {
     download('reading-plan.ics', Planner.buildICS(p, state.books, { calName: t('app_name') }), 'text/calendar;charset=utf-8');
     toast(t('toast_exported'));
@@ -468,12 +634,12 @@ function renderShelf() {
   el.querySelectorAll('[data-filter]').forEach(c => c.addEventListener('click', () => { ui.shelfFilter = c.dataset.filter; renderShelf(); }));
   el.querySelectorAll('[data-act="start"]').forEach(b => b.addEventListener('click', () => {
     const book = bookById(b.dataset.id); if (!book) return;
-    book.status = 'reading'; if (!book.due) book.due = Planner.addDays(today(), state.settings.loanDays);
-    save(); toast(t('toast_saved')); render();
+    book.status = 'reading'; book.returnedUnfinished = false; if (!book.due) book.due = Planner.addDays(today(), state.settings.loanDays);
+    save(); toast(t('toast_saved')); render(); enrichMissing();
   }));
   el.querySelectorAll('[data-act="requeue"]').forEach(b => b.addEventListener('click', () => {
     const book = bookById(b.dataset.id); if (!book) return;
-    book.status = 'queued'; save(); render();
+    book.status = 'queued'; book.returnedUnfinished = false; save(); render();
   }));
   el.querySelectorAll('[data-act="delete"]').forEach(b => b.addEventListener('click', () => {
     const book = bookById(b.dataset.id); if (!book) return;
@@ -490,7 +656,7 @@ function bookRow(b) {
   if (b.pages) meta.push(t('row_pages', { n: b.pages }));
   if (b.due && b.status !== 'done') meta.push(t('row_due', { date: fmtDate(b.due) }));
   if (b.status === 'reading' && b.pages) meta.push(t('progress', { cur: b.currentPage || 0, total: b.pages }));
-  const stars = b.status === 'done' ? `
+  const stars = b.status === 'done' && !b.returnedUnfinished ? `
     <span class="stars">${[1, 2, 3, 4, 5].map(n => `<button data-rate="${n}" data-id="${b.id}" class="${(b.rating || 0) >= n ? 'on' : ''}" aria-label="${n}">★</button>`).join('')}</span>
     ${b.rating ? '' : `<span class="stars-hint">${esc(t('rating_hint'))}</span>`}` : '';
   const actions = b.status === 'reading' ? `
@@ -510,7 +676,7 @@ function bookRow(b) {
       ${coverHtml(b)}
       <div class="book-main">
         <div class="book-title">${esc(b.title)}</div>
-        <div class="book-meta"><span>${esc(b.author || t('unknown_author'))}</span>${meta.map(m => `<span>${esc(m)}</span>`).join('')}${libBadges(b)}${b.source === 'library' ? `<span class="badge library">${esc(t('from_library'))}</span>` : ''}</div>
+        <div class="book-meta"><span>${esc(b.author || t('unknown_author'))}</span>${meta.map(m => `<span>${esc(m)}</span>`).join('')}${b.returnedUnfinished ? `<span class="badge">${esc(t('badge_returned'))}</span>` : ''}${libBadges(b)}${b.source === 'library' ? `<span class="badge library">${esc(t('from_library'))}</span>` : ''}</div>
         <div class="book-actions">${actions}</div>
       </div>
     </div>`;
@@ -828,8 +994,12 @@ function renderBookFormStep(book, pre) {
     if (patch.pages && patch.currentPage > patch.pages) patch.currentPage = patch.pages;
     if (patch.status === 'done' && patch.pages) patch.currentPage = patch.pages;
     if (book) {
+      const titleChanged = book.title !== patch.title;
       Object.assign(book, patch);
+      if (patch.pages) book.pagesNotFound = false;
+      if (titleChanged) book.enrichedAt = 0;
       if (patch.status === 'done' && !book.finishedAt) book.finishedAt = today();
+      if (patch.status !== 'done') book.returnedUnfinished = false;
       save();
     } else {
       addBook(Object.assign({}, { coverUrl: pre.coverUrl || '', olKey: pre.olKey || '', subjects: pre.subjects || [], source: pre.olKey ? 'search' : 'manual' }, patch));
@@ -890,8 +1060,9 @@ applyStaticI18n();
 render();
 window.postMessage({ type: SYNC_REQ }, '*'); // 확장이 있으면 최신 동기화 데이터를 보내 줌
 if (navigator.onLine) enrichMissing();
+window.addEventListener('online', () => enrichMissing());
 
 // 디버깅/테스트용 최소 노출
-window.LRP = { applySync, get state() { return state; } };
+window.LRP = { applySync, enrichMissing, get state() { return state; } };
 
 })();
