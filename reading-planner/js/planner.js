@@ -56,7 +56,7 @@
       if (pages && remaining === 0) status = 'done';
       else if (!due) status = 'nodue';
       else if (!pages) status = 'nopages';
-      else if (daysLeft <= 0) { status = 'overdue'; perDay = remaining; }
+      else if (daysLeft <= 0) status = 'overdue'; // 연체: 일정에 넣지 않고 반납/연장을 제안 (연장하면 새 반납일로 다시 계산)
       else {
         perDay = Math.ceil(remaining / daysLeft);
         status = perDay > capacity ? 'tight' : 'ok';
@@ -77,9 +77,9 @@
     const calendar = [];
     for (let k = 0; k < horizon; k++) calendar.push({ date: addDays(today, k), total: 0, entries: [] });
     for (const it of items) {
-      if (!(it.status === 'ok' || it.status === 'tight' || it.status === 'overdue')) continue;
+      if (!(it.status === 'ok' || it.status === 'tight')) continue;
       let page = it.currentPage, left = it.remaining;
-      const span = it.status === 'overdue' ? 1 : it.daysLeft;
+      const span = it.daysLeft;
       for (let k = 0; k < span && k < horizon && left > 0; k++) {
         const n = Math.min(it.perDay, left);
         calendar[k].entries.push({ bookId: it.id, title: it.book.title, pages: n, from: page + 1, to: page + n });

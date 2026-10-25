@@ -124,6 +124,7 @@ main { max-width: 940px; margin: 0 auto; padding: 20px 16px 60px; }
 .sync-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-soft); padding-top: 8px; border-top: 1px solid var(--line); }
 .sync-dot { width: 9px; height: 9px; border-radius: 99px; background: var(--muted); flex: 0 0 auto; }
 .sync-dot.on { background: var(--good); }
+.ext-on { color: var(--good); font-weight: 700; }
 
 .suggestions { display: grid; gap: 8px; margin-top: 12px; }
 .sug { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 12px; font-size: 14px; background: var(--accent-soft); color: var(--ink); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }

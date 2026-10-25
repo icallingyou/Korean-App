@@ -35,14 +35,15 @@ test('기본 계획: 남은 200쪽을 여유 1일 빼고 9일에 나눠 읽기',
   assert.equal(plan.calendar[9].entries[0].to, 300);
 });
 
-test('연체: 남은 분량 전부 오늘, overdue 제안', () => {
+test('연체: 일정에 넣지 않고(오늘 분량 0) overdue 제안', () => {
   const plan = Pl.buildPlan([book({ due: '2026-10-20' })], { today: TODAY });
   const it = plan.items[0];
   assert.equal(it.status, 'overdue');
-  assert.equal(it.perDay, 200);
-  assert.equal(plan.totalToday, 200);
+  assert.equal(it.perDay, 0);
+  assert.equal(it.dueIn, -5);
+  assert.equal(plan.totalToday, 0);
   assert.ok(plan.suggestions.some(s => s.type === 'overdue' && s.bookId === 'b1'));
-  assert.equal(plan.calendar[1].entries.length, 0);
+  assert.equal(plan.calendar[0].entries.length, 0);
 });
 
 test('반납일이 오늘이면 여유일 무시하고 오늘까지', () => {

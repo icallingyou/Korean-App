@@ -1,5 +1,5 @@
 /* 오프라인 지원 서비스 워커 — 네트워크 우선, 실패 시 캐시 (Open Library 요청은 캐시하지 않음) */
-const CACHE = 'lrp-v1';
+const CACHE = 'lrp-v2';
 const ASSETS = [
   './', './index.html', './css/style.css',
   './js/i18n.js', './js/parse-checkouts.js', './js/planner.js', './js/openlibrary.js', './js/app.js',

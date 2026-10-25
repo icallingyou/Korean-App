@@ -41,7 +41,7 @@ function load() {
 }
 function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (_) { /* quota */ } }
 
-const ui = { view: 'today', shelfFilter: 'reading', calSel: null, q: '', searchResults: null, searching: false, recsLoading: false, recsError: false };
+const ui = { view: 'today', shelfFilter: 'reading', calSel: null, q: '', searchResults: null, searching: false, recsLoading: false, recsError: false, extConnected: false };
 
 // ---------------------------------------------------------------
 // i18n / 헬퍼
@@ -150,21 +150,24 @@ function setProgress(b, page) {
 }
 function markDone(b) { b.status = 'done'; if (b.pages) b.currentPage = b.pages; b.finishedAt = today(); save(); }
 
-/** Open Library에서 페이지 수·표지·주제 보강 */
+/** Open Library(1차) → Google Books(2차)에서 페이지 수·표지·주제 보강 */
 async function enrich(b) {
   if (!navigator.onLine) return false;
-  try {
-    const hit = await OL.lookup(b.title, b.author);
-    if (!hit) return false;
-    let changed = false;
+  let changed = false;
+  const apply = (hit, withKey) => {
+    if (!hit) return;
     if (!b.pages && hit.pages) { b.pages = hit.pages; changed = true; }
     if (!b.coverUrl && hit.coverUrl) { b.coverUrl = hit.coverUrl; changed = true; }
-    if (!b.olKey && hit.olKey) { b.olKey = hit.olKey; changed = true; }
-    if (!(b.subjects || []).length && hit.subjects.length) { b.subjects = hit.subjects; changed = true; }
+    if (withKey && !b.olKey && hit.olKey) { b.olKey = hit.olKey; changed = true; }
+    if (!(b.subjects || []).length && (hit.subjects || []).length) { b.subjects = hit.subjects; changed = true; }
     if (!b.author && hit.author) { b.author = hit.author; changed = true; }
-    if (changed) save();
-    return changed;
-  } catch (_) { return false; }
+  };
+  try { apply(await OL.lookup(b.title, b.author), true); } catch (_) { /* 다음 조회원 */ }
+  if ((!b.pages || !b.coverUrl) && window.GB) {
+    try { apply(await GB.lookup(b.title, b.author), false); } catch (_) { /* 무시 */ }
+  }
+  if (changed) save();
+  return changed;
 }
 let enriching = false;
 async function enrichMissing() {
@@ -188,15 +191,21 @@ function mergeItems(items, source) {
   for (const it of items || []) {
     if (!it || !it.title) continue;
     const ex = state.books.find(b => titleMatch(b.title, it.title));
+    const flags = {};
+    if (typeof it.renewable === 'boolean') flags.renewable = it.renewable;
+    if (it.status) flags.libStatus = it.status;
     if (ex) {
       let ch = false;
       if (it.due && ex.due !== it.due) { ex.due = it.due; ch = true; }
       if (ex.status === 'queued') { ex.status = 'reading'; ch = true; }
       if (!ex.author && it.author) { ex.author = it.author; ch = true; }
+      // 잘린 제목("... ")보다 긴 제목이 오면 교체
+      if (it.title.length > ex.title.length && /\.{3}|…/.test(ex.title)) { ex.title = it.title; ch = true; }
       if (source === 'library') ex.source = 'library';
+      for (const [k, v] of Object.entries(flags)) if (ex[k] !== v) { ex[k] = v; ch = true; }
       if (ch) updated++;
     } else {
-      addBook({ title: it.title, author: it.author || '', due: it.due || null, status: 'reading', source });
+      addBook(Object.assign({ title: it.title, author: it.author || '', due: it.due || null, status: 'reading', source }, flags));
       added++;
     }
   }
@@ -205,7 +214,11 @@ function mergeItems(items, source) {
 }
 function applySync(payload) {
   if (!payload || typeof payload !== 'object') return;
-  const items = Array.isArray(payload.items) ? payload.items : [];
+  let items = Array.isArray(payload.items) ? payload.items : [];
+  // 확장이 페이지 원문을 함께 보내면 항상 최신 파서(웹앱 쪽)로 다시 분석
+  if (typeof payload.pageText === 'string' && payload.pageText.length > 20 && window.CheckoutParser) {
+    try { const re = CheckoutParser.parseCheckoutsFromText(payload.pageText); if (re.length) items = re; } catch (_) { /* 원래 items 사용 */ }
+  }
   const r = mergeItems(items, 'library');
   if (typeof payload.searchTemplate === 'string' && payload.searchTemplate.includes('{q}')) state.settings.qplSearchUrlAuto = payload.searchTemplate;
   if (items.length) state.sync = { at: Number(payload.syncedAt) || Date.now(), count: items.length, sourceUrl: String(payload.sourceUrl || '') };
@@ -214,7 +227,10 @@ function applySync(payload) {
   if (r.added || r.updated) { toast(t('toast_synced', { n: items.length })); enrichMissing(); }
 }
 window.addEventListener('message', e => {
-  if (e.source !== window || !e.data || e.data.type !== SYNC_MSG) return;
+  if (e.source !== window || !e.data) return;
+  if (e.data.type === 'LRP_HELLO') { if (!ui.extConnected) { ui.extConnected = true; render(); } return; }
+  if (e.data.type !== SYNC_MSG) return;
+  ui.extConnected = true;
   applySync(e.data.payload);
 });
 
@@ -271,9 +287,16 @@ function suggestionHtml(s) {
     s.type === 'mark_done' && b ? `<button class="link-btn" data-finish="${b.id}">${esc(t('btn_finish'))}</button>` : '';
   return `<div class="sug ${cls}"><span>${esc(text)}</span>${action}</div>`;
 }
+function libBadges(b) {
+  const out = [];
+  if (b.libStatus && /lost|billed/i.test(b.libStatus)) out.push(`<span class="badge overdue">${esc(t('badge_lost'))}</span>`);
+  else if (b.libStatus && /requested/i.test(b.libStatus)) out.push(`<span class="badge tight">${esc(t('badge_requested'))}</span>`);
+  else if (b.renewable === false) out.push(`<span class="badge tight">${esc(t('badge_not_renewable'))}</span>`);
+  return out.join('');
+}
 function taskCard(it) {
   const b = it.book;
-  const scheduled = it.status === 'ok' || it.status === 'tight' || it.status === 'overdue';
+  const scheduled = it.status === 'ok' || it.status === 'tight';
   let goal;
   if (scheduled && it.perDay > 0) goal = `<p class="goal">${esc(t('read_pages', { from: it.currentPage + 1, to: it.currentPage + it.perDay, n: it.perDay }))}</p>`;
   else if (it.status === 'nopages') goal = `<p class="goal soft">${esc(t('no_pages'))}</p>`;
@@ -289,7 +312,7 @@ function taskCard(it) {
     <article class="task st-${it.status}" data-id="${b.id}">
       ${coverHtml(b)}
       <div class="task-main">
-        <div class="task-top">${statusBadge(it.status)}<span>${esc(dueText(it))}</span>${b.source === 'library' ? `<span class="badge library">${esc(t('from_library'))}</span>` : ''}</div>
+        <div class="task-top">${statusBadge(it.status)}<span>${esc(dueText(it))}</span>${libBadges(b)}${b.source === 'library' ? `<span class="badge library">${esc(t('from_library'))}</span>` : ''}</div>
         <h3>${esc(b.title)}</h3>
         <p class="author">${esc(b.author || t('unknown_author'))}</p>
         ${goal}
@@ -368,6 +391,7 @@ function renderToday() {
       <div class="sync-line">
         <span class="sync-dot ${state.sync.at ? 'on' : ''}"></span>
         <span>${state.sync.at ? esc(t('sync_last', { when: fmtRel(state.sync.at), n: state.sync.count })) : esc(t('sync_never'))}</span>
+        <span class="small ${ui.extConnected ? 'ext-on' : 'muted'}">${ui.extConnected ? '🧩 ' + esc(t('ext_connected')) : esc(t('ext_not_detected'))}</span>
         <button class="link-btn" data-act="import">${esc(t('sync_how'))}</button>
       </div>
       ${p.suggestions.length ? `<div class="suggestions">${p.suggestions.map(suggestionHtml).join('')}</div>` : ''}
@@ -486,7 +510,7 @@ function bookRow(b) {
       ${coverHtml(b)}
       <div class="book-main">
         <div class="book-title">${esc(b.title)}</div>
-        <div class="book-meta"><span>${esc(b.author || t('unknown_author'))}</span>${meta.map(m => `<span>${esc(m)}</span>`).join('')}${b.source === 'library' ? `<span class="badge library">${esc(t('from_library'))}</span>` : ''}</div>
+        <div class="book-meta"><span>${esc(b.author || t('unknown_author'))}</span>${meta.map(m => `<span>${esc(m)}</span>`).join('')}${libBadges(b)}${b.source === 'library' ? `<span class="badge library">${esc(t('from_library'))}</span>` : ''}</div>
         <div class="book-actions">${actions}</div>
       </div>
     </div>`;

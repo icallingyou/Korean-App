@@ -1,13 +1,18 @@
 /* =============================================================
    content-planner.js — 플래너 웹앱 페이지에서 실행되는 브리지
    chrome.storage(확장) → window.postMessage → 플래너 페이지
+   (manifest의 content_scripts로 자동 주입되거나, background.js가
+    이미 열려 있던 탭에 뒤늦게 주입하기도 한다)
    ============================================================= */
 (() => {
   'use strict';
   if (window.__lrpPlannerBridge) return;
   window.__lrpPlannerBridge = true;
 
+  function hello() { window.postMessage({ type: 'LRP_HELLO', from: 'extension' }, '*'); }
+
   function send() {
+    hello();
     chrome.storage.local.get(['lastSync', 'searchTemplate'], d => {
       if (chrome.runtime.lastError) return;
       if (!d.lastSync && !d.searchTemplate) return;

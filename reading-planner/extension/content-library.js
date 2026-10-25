@@ -20,7 +20,11 @@
   }
 
   function storeItems(items) {
-    const payload = { items, syncedAt: Date.now(), sourceUrl: location.href, sourceHost: location.host };
+    // 페이지 원문(제목·반납일이 있는 본문 텍스트)도 함께 저장:
+    // 플래너 쪽 최신 파서가 다시 분석할 수 있어 확장을 업데이트하지 않아도 개선이 반영된다.
+    let pageText = '';
+    try { pageText = (document.body.innerText || '').slice(0, 300000); } catch (_) { /* ignore */ }
+    const payload = { items, syncedAt: Date.now(), sourceUrl: location.href, sourceHost: location.host, pageText };
     return chrome.storage.local.set({ lastSync: payload });
   }
 

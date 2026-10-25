@@ -1,14 +1,18 @@
 {
   "manifest_version": 3,
   "name": "Library Reading Planner Sync",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Syncs your library checkouts (titles and due dates) from your library's Checked Out page to the Library Reading Planner. No passwords are stored.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": [
     "https://*.queenslibrary.org/*",
     "https://*.iiivega.com/*",
-    "https://*.bibliocommons.com/*"
+    "https://*.bibliocommons.com/*",
+    "https://icallingyou.github.io/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
   ],
+  "background": { "service_worker": "background.js" },
   "action": {
     "default_popup": "popup.html",
     "default_title": "Library Reading Planner Sync",
