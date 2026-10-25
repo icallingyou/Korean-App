@@ -11,6 +11,7 @@
 const LS_KEY = 'qpl-planner.v1';
 const DEFAULT_QPL_URL = 'https://www.queenslibrary.org/search?query={q}';
 const EXT_GUIDE_URL = 'https://github.com/icallingyou/Korean-App/blob/claude/korean-learning-app-ds2o4p/reading-planner/extension/README.md';
+const EXT_ZIP_URL = 'https://icallingyou.github.io/Korean-App/reading-planner/extension.zip'; // 배포 시 워크플로가 생성
 const SYNC_MSG = 'LRP_SYNC';          // 확장 → 페이지
 const SYNC_REQ = 'LRP_SYNC_REQUEST';  // 페이지 → 확장
 const GENERIC_SUBJECT = /^(fiction|accessible book|protected daisy|in library|large type books|long now manual for civilization|open library staff picks|new york times bestseller|reading level[- ]grade.*|juvenile fiction|general|literature|english|novels?|ficci[oó]n|romans?|nouvelles|lending library|overdrive|internet archive wishlist|popular print disabled books|translations? into .*|history and criticism|adult|nyt:.*|award:.*|collectionid:.*|children's fiction|fiction, general|fiction, .*|literary|literary fiction)$/i;
@@ -667,7 +668,10 @@ function renderSettings() {
         <p class="hint">${esc(t('import_how_ext'))}</p>
         <div class="row-between">
           <span class="small">${state.sync.at ? esc(t('set_ext_status', { when: fmtRel(state.sync.at), n: state.sync.count })) : esc(t('set_ext_status_never'))}</span>
-          <a class="btn small" href="${EXT_GUIDE_URL}" target="_blank" rel="noopener">${ICON.ext} ${esc(t('set_ext_guide'))}</a>
+          <div class="btn-row">
+            <a class="btn small primary" href="${EXT_ZIP_URL}">${ICON.ext} ${esc(t('btn_ext_download'))}</a>
+            <a class="btn small" href="${EXT_GUIDE_URL}" target="_blank" rel="noopener">${esc(t('set_ext_guide'))}</a>
+          </div>
         </div>
       </div>
 
@@ -817,7 +821,7 @@ function renderBookFormStep(book, pre) {
 function openImportDialog() {
   openDlg(`
     <h2>${esc(t('import_title'))}</h2>
-    <div class="how-box">🧩 ${esc(t('import_how_ext'))} <a href="${EXT_GUIDE_URL}" target="_blank" rel="noopener">${esc(t('import_ext_link'))} ↗</a></div>
+    <div class="how-box">🧩 ${esc(t('import_how_ext'))} <a href="${EXT_ZIP_URL}">${esc(t('btn_ext_download'))}</a> · <a href="${EXT_GUIDE_URL}" target="_blank" rel="noopener">${esc(t('import_ext_link'))} ↗</a></div>
     <div class="how-box">📋 ${esc(t('import_how_paste'))}</div>
     <div class="field"><textarea id="imp-text" placeholder="${esc(t('import_ph'))}"></textarea></div>
     <div id="imp-preview"></div>

@@ -9,11 +9,14 @@
 
 ## 설치 (개발자 모드로 불러오기)
 
-1. 이 저장소를 내려받습니다: GitHub에서 **Code → Download ZIP** 후 압축 해제 (또는 `git clone`).
+1. **확장 파일 내려받기** — 둘 중 편한 방법으로:
+   - 바로 받기(권장): **https://icallingyou.github.io/Korean-App/reading-planner/extension.zip** → 내려받은 `extension.zip`의 압축을 풉니다.
+   - 저장소 전체 받기: GitHub 저장소 첫 화면의 초록색 **Code → Download ZIP** → 압축을 풀고 그 안의 `reading-planner/extension` 폴더를 사용합니다.
 2. 크롬 주소창에 `chrome://extensions` 입력 → 우측 상단 **개발자 모드** 켜기.
-3. **압축해제된 확장 프로그램을 로드합니다** 클릭 → 압축 해제한 폴더 안의 `reading-planner/extension` 폴더 선택.
+3. **압축해제된 확장 프로그램을 로드합니다** 클릭 → 압축을 푼 `extension` 폴더(안에 `manifest.json`이 바로 보이는 폴더)를 선택.
 4. 툴바 퍼즐 아이콘(🧩)에서 "Library Reading Planner Sync"를 고정해 두면 편합니다.
 
+> 압축을 푼 폴더는 지우지 마세요 — 크롬이 그 폴더를 계속 참조합니다.
 > Edge, Brave, Whale 등 크로미움 기반 브라우저에서도 같은 방법으로 설치됩니다.
 
 ## 사용법

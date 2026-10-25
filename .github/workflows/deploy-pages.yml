@@ -32,6 +32,13 @@ jobs:
         with:
           enablement: true
 
+      - name: Package Chrome extension (reading-planner/extension.zip)
+        run: |
+          cd reading-planner
+          rm -f extension.zip
+          zip -r extension.zip extension -x '*.DS_Store'
+          unzip -l extension.zip
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
