@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Library Reading Planner Sync</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="" width="28" height="28">
+    <div>
+      <h1>Reading Planner Sync</h1>
+      <p id="status-line" class="muted">Loading…</p>
+    </div>
+  </header>
+
+  <div class="actions">
+    <button id="sync" class="primary">Sync this page now</button>
+    <button id="open">Open planner</button>
+  </div>
+  <p id="msg" class="msg" hidden></p>
+
+  <section>
+    <h2>Last sync</h2>
+    <ul id="items" class="items"><li class="muted">Nothing synced yet.</li></ul>
+  </section>
+
+  <section class="how">
+    <h2>How it works</h2>
+    <ol>
+      <li>Sign in to your library website and open <b>My Account → Checked Out</b>.</li>
+      <li>Titles and due dates are read from that page automatically (or click <b>Sync this page now</b>).</li>
+      <li>Open the planner — your checkouts appear there with daily reading goals.</li>
+    </ol>
+    <p class="muted">Only titles, authors and due dates are stored, on this device. No passwords.</p>
+  </section>
+</body>
+<script src="popup.js"></script>
+</html>

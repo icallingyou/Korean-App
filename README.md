@@ -1,5 +1,9 @@
 # 중급 한국어 단어장 🇰🇷
 
+> 이 저장소에는 두 개의 앱이 있습니다.
+> - **중급 한국어 단어장** (이 문서) — https://icallingyou.github.io/Korean-App/
+> - **Library Reading Planner** (도서관 대출 독서 플래너) — https://icallingyou.github.io/Korean-App/reading-planner/ · [설명서](reading-planner/README.md)
+
 국립국어원 **한국어기초사전의 등급별 어휘(중급)** 분류를 기준으로 선별한 한국어 단어를,
 **예문과 함께 한국어로 낭독**해 주고 **영어로 뜻과 문장을 설명**해 주는 웹 학습 앱입니다.
 

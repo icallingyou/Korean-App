@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Library Reading Planner Sync",
+  "version": "1.0.0",
+  "description": "Syncs your library checkouts (titles and due dates) from your library's Checked Out page to the Library Reading Planner. No passwords are stored.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://*.queenslibrary.org/*",
+    "https://*.iiivega.com/*",
+    "https://*.bibliocommons.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Library Reading Planner Sync",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "content_scripts": [
+    {
+      "matches": ["https://*.queenslibrary.org/*", "https://*.iiivega.com/*", "https://*.bibliocommons.com/*"],
+      "js": ["parse-checkouts.js", "content-library.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://icallingyou.github.io/Korean-App/reading-planner/*",
+        "https://*.github.io/*/reading-planner/*",
+        "http://localhost/*",
+        "http://127.0.0.1/*"
+      ],
+      "js": ["content-planner.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

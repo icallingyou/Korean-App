@@ -1,0 +1,18 @@
+body { width: 340px; margin: 0; padding: 14px; font: 13.5px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: #1c1f1e; background: #f6f6f2; }
+header { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+h1 { font-size: 15px; margin: 0; }
+h2 { font-size: 12px; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: .4px; color: #828a86; }
+p { margin: 0; }
+.muted { color: #828a86; font-size: 12.5px; }
+.actions { display: flex; gap: 8px; }
+button { flex: 1; font: inherit; font-weight: 700; padding: 9px 10px; border-radius: 10px; border: 1px solid #e1e3dd; background: #fff; cursor: pointer; }
+button.primary { background: #0f766e; border-color: #0f766e; color: #fff; }
+button:disabled { opacity: .6; cursor: default; }
+.msg { margin-top: 10px; padding: 8px 10px; border-radius: 9px; background: #dcf2ee; font-size: 12.5px; }
+.msg.warn { background: #fef0d9; }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 190px; overflow: auto; }
+.items li { background: #fff; border: 1px solid #e1e3dd; border-radius: 9px; padding: 7px 10px; display: flex; justify-content: space-between; gap: 8px; }
+.items li b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.items li span { color: #0f766e; font-weight: 700; white-space: nowrap; }
+.how ol { margin: 0 0 6px; padding-left: 18px; }
+.how li + li { margin-top: 3px; }

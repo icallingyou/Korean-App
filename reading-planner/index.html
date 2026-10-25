@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Library Reading Planner</title>
+<meta name="description" content="Plan your reading around Queens Public Library due dates: import your checkouts, get daily page goals, a 4-week calendar, and book recommendations.">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Reading Plan">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21V5.5zM20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5A2.5 2.5 0 0 1 20 21V5.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-text">
+        <h1 data-i18n="app_name">Library Reading Planner</h1>
+        <p class="tagline" data-i18n="tagline">Queens Library checkouts · reading schedule · recommendations</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button class="tab is-active" data-view="today" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span data-i18n="tab_today">Today</span>
+      </button>
+      <button class="tab" data-view="shelf" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM15.5 5.2l3.8-1 4 15.5-3.8 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span data-i18n="tab_shelf">Shelf</span>
+      </button>
+      <button class="tab" data-view="discover" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span data-i18n="tab_discover">Discover</span>
+      </button>
+      <button class="tab" data-view="settings" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span data-i18n="tab_settings">Settings</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="view-today" class="view" aria-label="Today"></section>
+  <section id="view-shelf" class="view" hidden aria-label="Shelf"></section>
+  <section id="view-discover" class="view" hidden aria-label="Discover"></section>
+  <section id="view-settings" class="view" hidden aria-label="Settings"></section>
+</main>
+
+<dialog id="dlg" class="dlg"></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<footer class="app-footer">
+  <p data-i18n="set_about">Book details and covers come from Open Library (openlibrary.org). This is an independent tool and is not affiliated with Queens Public Library.</p>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/parse-checkouts.js"></script>
+<script src="js/planner.js"></script>
+<script src="js/openlibrary.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
